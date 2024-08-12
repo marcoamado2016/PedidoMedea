@@ -174,7 +174,7 @@ export default function LoginPage(pedido?: any) {
     }
     return (
         <>
-            <Grid container >
+            <Grid container style={{ backgroundColor: '#419df3' }}>
                 <Form
                     title={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? 'Editar pedido ' : 'Registrar Pedido'}
                     descripcion={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? 'Formulario para editar pedido ' : "Formulario para registrar pedido"}
@@ -196,7 +196,7 @@ export default function LoginPage(pedido?: any) {
                                 label='Numero pedido'
                                 name='numeroPedido'
                                 placeholder="Numero de pedido"
-                                type="text"
+                                type="number"
                                 defaultValue={formValues.numeroPedido}
                             />
                         </Grid>
@@ -209,12 +209,13 @@ export default function LoginPage(pedido?: any) {
                                 defaultValue={formValues.nombre}
                             />
                         </Grid>
+
                         <Grid item xs={12} sm={2}>
                             <Form.Input
                                 label='Pizza'
                                 name='pizza'
                                 placeholder="pizza"
-                                type="text"
+                                type="number"
                                 defaultValue={formValues.pizza}
                             />
                         </Grid>
@@ -227,12 +228,14 @@ export default function LoginPage(pedido?: any) {
                                 defaultValue={formValues.detallepizza}
                             />
                         </Grid>
+
+
                         <Grid item xs={12} sm={2}>
                             <Form.Input
                                 label='Empanadas'
                                 name='empanada'
                                 placeholder="empanada"
-                                type="text"
+                                type="number"
                                 defaultValue={formValues.empanada}
                             />
                         </Grid>
@@ -250,7 +253,7 @@ export default function LoginPage(pedido?: any) {
                                 label='Cono de papas'
                                 name='cono'
                                 placeholder="cono"
-                                type="text"
+                                type="number"
                                 defaultValue={formValues.cono}
                             />
 
@@ -269,7 +272,7 @@ export default function LoginPage(pedido?: any) {
                                 label='Lomitos'
                                 name='lomito'
                                 placeholder="lomito"
-                                type="text"
+                                type="number"
                                 defaultValue={formValues.lomito}
                             />
                         </Grid>
@@ -287,7 +290,7 @@ export default function LoginPage(pedido?: any) {
                                 label='Hamburguesa'
                                 name='hamburguesa'
                                 placeholder="hamburguesa"
-                                type="text"
+                                type="number"
                                 defaultValue={formValues.hamburguesa}
                             />
                         </Grid>
@@ -305,7 +308,7 @@ export default function LoginPage(pedido?: any) {
                                 label='pancho'
                                 name='pancho'
                                 placeholder="pancho"
-                                type="text"
+                                type="number"
                                 defaultValue={formValues.hamburguesa}
                             />
                         </Grid>

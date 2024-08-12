@@ -5,14 +5,14 @@ import { useContext, useEffect } from "react"
 import styles from './styles.module.scss'
 import { FormContext } from ".."
 interface InputProps {
-    type?: 'text' | 'password' | 'date'
+    type?: 'text' | 'password' | 'date' | 'number'
     name: string
     label: string
     placeholder?: string
     defaultValue?: string
 }
 
-export function Input({ label, name, placeholder, type, defaultValue}: InputProps) {
+export function Input({ label, name, placeholder, type, defaultValue }: InputProps) {
 
     const { formValues, setFormValues } = useContext(FormContext)!
 

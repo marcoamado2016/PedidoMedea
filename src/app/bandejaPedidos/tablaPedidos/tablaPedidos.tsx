@@ -6,7 +6,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import HourglassBottomOutlinedIcon from '@mui/icons-material/HourglassBottomOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import { usePedidoFetch } from "@/hooks/usePedidoFetch";
-import { SetStateAction, useState, Dispatch } from "react";
+import { SetStateAction, useState, Dispatch, useEffect } from "react";
 import React from "react";
 import MiDialog2 from "@/app/MiDialog2/MiDialog2";
 import { useRouter } from "next/navigation"
@@ -46,6 +46,14 @@ export default function TablaPedidos(props: {
         title: '',
         message: ''
     })
+    const [estados, seEstados] = React.useState<string[]>(
+        ["Generado", "Preparar", "Listo", "Entregado"]
+    )
+    const calcularEstadoSiguiente = (estado: string) => {
+        const index = estados.indexOf(estado);
+        if (index != 3) return estados[index + 1];
+        return "";
+    }
     const [pedidoSeleccionado, setPedidoSeleccionado] = React.useState<PedisoSelccionado>({
         numeroPedido: 0, estado: "", detalle: "", fechaPedido: "", nombre: "", empanada: "", pizza: "", lomito: "", cono: "", hamburguesa: ""
     })
@@ -122,7 +130,7 @@ export default function TablaPedidos(props: {
                         No se encontraron resultados para la búsqueda realizada
                     </Typography>) : (
                     <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <Table sx={{ minWidth: 1000 }} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="center" style={{ color: "#00519b" }}>
@@ -143,147 +151,163 @@ export default function TablaPedidos(props: {
                                 </TableRow>
                             </TableHead>
                             <TableBody >
-                                {props.datosTabla?.map((pedido) => (
-                                    <TableRow
-                                        key={pedido.numeroPedido}
-                                        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                                        <TableCell align="center">
-                                            {pedido.numeroPedido}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
-                                                {pedido.nombre}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
-                                                {pedido.estado}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
-                                                {pedido.pizza != 0 ? pedido.detallepizza ? pedido.pizza + ' PIZZAS ' + pedido.detallepizza + ', ' : pedido.pizza + ' PIZZAS' : ''}
-                                                {pedido.empanada != 0 ? pedido.detalleempanada ? pedido.empanada + ' EMP ' + pedido.detalleempanada + '' : pedido.empanada + ' EMP' : ''}
-                                            </Typography>
-                                            <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
-                                                {pedido.cono != 0 ? pedido.detallecono ? pedido.cono + ' CONO ' + pedido.detallecono + ', ' : pedido.cono + ' CONO' : ''}
-                                                {pedido.lomito != 0 ? pedido.detallelomo ? pedido.lomito + ' LOMOS ' + pedido.detallelomo + ' ' : pedido.lomito + ' LOMOS' : ''}
-                                            </Typography>
-                                            <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
-                                                {pedido.hamburguesa != 0 ? pedido.detallehamburguesa ? pedido.hamburguesa + ' HAMBUR ' + pedido.detallehamburguesa + ' ' : pedido.hamburguesa + ' HAMBUR' : ''}
-                                                {pedido.pancho != 0 ? pedido.detallepancho ? pedido.pancho + ' PANCHO ' + pedido.detallepancho + ', ' : pedido.pancho + ' PANCHO' : ''}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <Grid
-                                                container
-                                                direction="row"
-                                                justifyContent="center"
-                                                alignItems="center"
-                                                spacing={3.5}
-                                            >
-                                                <Grid item xs={2} xl={2}>
-                                                    <Tooltip
-                                                        title="Generar pedido"
-                                                        placement="top"
-                                                        arrow
-                                                    >
-                                                        <IconButton
-                                                            onClick={() => {
-                                                                let estado = "Generado";
-                                                                cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
-                                                            }}
+                                {props.datosTabla?.map((pedido) => {
+                                    const siguienteEstado = calcularEstadoSiguiente(pedido.estado);
+                                    return (
+                                        <TableRow
+                                            key={pedido.numeroPedido}
+                                            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                            <TableCell align="center">
+                                                <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
+                                                    {pedido.numeroPedido}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
+                                                    {pedido.nombre}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
+                                                    {pedido.estado}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
+                                                    {pedido.pizza != 0 ? pedido.detallepizza ? pedido.pizza + ' PIZZAS ' + pedido.detallepizza + ', ' : pedido.pizza + ' PIZZAS' : ''}
+                                                    {pedido.empanada != 0 ? pedido.detalleempanada ? pedido.empanada + ' EMP ' + pedido.detalleempanada + '' : pedido.empanada + ' EMP' : ''}
+                                                </Typography>
+                                                <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
+                                                    {pedido.cono != 0 ? pedido.detallecono ? pedido.cono + ' CONO ' + pedido.detallecono + ', ' : pedido.cono + ' CONO' : ''}
+                                                    {pedido.lomito != 0 ? pedido.detallelomo ? pedido.lomito + ' LOMOS ' + pedido.detallelomo + ' ' : pedido.lomito + ' LOMOS' : ''}
+                                                </Typography>
+                                                <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
+                                                    {pedido.hamburguesa != 0 ? pedido.detallehamburguesa ? pedido.hamburguesa + ' HAMBUR ' + pedido.detallehamburguesa + ' ' : pedido.hamburguesa + ' HAMBUR' : ''}
+                                                    {pedido.pancho != 0 ? pedido.detallepancho ? pedido.pancho + ' PANCHO ' + pedido.detallepancho + ', ' : pedido.pancho + ' PANCHO' : ''}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Grid
+                                                    container
+                                                    direction="row"
+                                                    justifyContent="center"
+                                                    alignItems="center"
+                                                    spacing={3.5}
+                                                >
+                                                    <Grid item xs={1} xl={1}>
+                                                        <Tooltip
+                                                            title="Generar pedido"
+                                                            placement="top"
+                                                            arrow
                                                         >
-                                                            <CreateNewFolderIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </Grid>
-                                                <Grid item xs={2} xl={2}>
-                                                    <Tooltip
-                                                        title="A preparar pedido"
-                                                        placement="top"
-                                                        arrow
-                                                    >
-                                                        <IconButton
-                                                            onClick={() => {
-                                                                let estado = "Preparar";
-                                                                cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
-                                                            }}
+                                                            <IconButton
+                                                                onClick={() => {
+                                                                    let estado = "Generado";
+                                                                    cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
+                                                                }}
+                                                                style={{ color: pedido.estado === 'Generado' ? "#00ff00" : '' }}
+                                                                disabled={siguienteEstado === "Generado" ? false : true}
+                                                            >
+                                                                <CreateNewFolderIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Grid>
+                                                    <Grid item xs={1} xl={1}>
+                                                        <Tooltip
+                                                            title="A preparar pedido"
+                                                            placement="top"
+                                                            arrow
                                                         >
-                                                            <HourglassBottomOutlinedIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </Grid>
-                                                <Grid item xs={2} xl={2}>
-                                                    <Tooltip
-                                                        title="Pedido Listo"
-                                                        placement="top"
-                                                        arrow
-                                                    >
-                                                        <IconButton
-                                                            onClick={() => {
-                                                                let estado = "Listo";
-                                                                cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
-                                                            }}
+                                                            <IconButton
+                                                                onClick={() => {
+                                                                    let estado = "Preparar";
+                                                                    cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
+                                                                }}
+                                                                style={{ color: pedido.estado === 'Preparar' ? "#00ff00" : '' }}
+                                                                disabled={siguienteEstado === "Preparar" ? false : true}
+                                                            >
+                                                                <HourglassBottomOutlinedIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Grid>
+                                                    <Grid item xs={1} xl={1}>
+                                                        <Tooltip
+                                                            title="Pedido Listo"
+                                                            placement="top"
+                                                            arrow
                                                         >
-                                                            <CheckIcon />
-                                                        </IconButton>
+                                                            <IconButton
+                                                                onClick={() => {
+                                                                    let estado = "Listo";
+                                                                    cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
+                                                                }}
+                                                                style={{ color: pedido.estado === 'Listo' ? "#00ff00" : '' }}
+                                                                disabled={siguienteEstado === "Listo" ? false : true}
+                                                            >
+                                                                <CheckIcon />
+                                                            </IconButton>
 
-                                                    </Tooltip>
-                                                </Grid>
-                                                <Grid item xs={2} xl={2}>
-                                                    <Tooltip
-                                                        title="Pedido entregado"
-                                                        placement="top"
-                                                        arrow
-                                                    >
-                                                        <IconButton
-                                                            onClick={() => {
-                                                                let estado = "Entregado";
-                                                                cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
-                                                            }}
+                                                        </Tooltip>
+                                                    </Grid>
+                                                    <Grid item xs={1} xl={1}>
+                                                        <Tooltip
+                                                            title="Pedido entregado"
+                                                            placement="top"
+                                                            arrow
                                                         >
-                                                            <DeliveryDiningIcon />
-                                                        </IconButton>
+                                                            <IconButton
+                                                                onClick={() => {
+                                                                    let estado = "Entregado";
+                                                                    cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
+                                                                }}
+                                                                style={{ color: pedido.estado === 'Entregado' ? "#00ff00" : '' }}
+                                                                disabled={siguienteEstado === "Entregado" ? false : true}
+                                                            >
+                                                                <DeliveryDiningIcon />
+                                                            </IconButton>
 
-                                                    </Tooltip>
-                                                </Grid>
-                                                <Grid item xs={2} xl={2}>
-                                                    <Tooltip
-                                                        title="Editar pedido"
-                                                        placement="top"
-                                                        arrow
-                                                    >
-                                                        <IconButton
-                                                            onClick={() => {
-                                                                mostrarpedidoSeleccionado(pedido)
-                                                            }}
+                                                        </Tooltip>
+                                                    </Grid>
+                                                    <Grid item xs={1} xl={1}>
+                                                        <Tooltip
+                                                            title="Editar pedido"
+                                                            placement="top"
+                                                            arrow
                                                         >
-                                                            <EditIcon />
-                                                        </IconButton>
+                                                            <IconButton
+                                                                onClick={() => {
+                                                                    mostrarpedidoSeleccionado(pedido)
+                                                                }}
+                                                                disabled={true}
+                                                            >
+                                                                <EditIcon />
+                                                            </IconButton>
 
-                                                    </Tooltip>
-                                                </Grid>
-                                                <Grid item xs={2} xl={2}>
-                                                    <Tooltip
-                                                        title="Cancelar pedido"
-                                                        placement="top"
-                                                        arrow
-                                                    >
-                                                        <IconButton
-                                                            onClick={() => {
-                                                                let estado = "Cancelado";
-                                                                cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
-                                                            }}
+                                                        </Tooltip>
+                                                    </Grid>
+                                                    <Grid item xs={1} xl={2}>
+                                                        <Tooltip
+                                                            title="Cancelar pedido"
+                                                            placement="top"
+                                                            arrow
                                                         >
-                                                            <CancelIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
+                                                            <IconButton
+                                                                onClick={() => {
+                                                                    let estado = "Cancelado";
+                                                                    cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
+                                                                }}
+                                                                style={{ color: pedido.estado === 'Cancelado' ? "#ff0000" : '' }}
+                                                                disabled={false}
+                                                            >
+                                                                <CancelIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Grid>
                                                 </Grid>
-                                            </Grid>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })}
 
                             </TableBody>
                         </Table>

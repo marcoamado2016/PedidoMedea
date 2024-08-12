@@ -42,19 +42,8 @@ export default function ContenedorTabla(props: {
 }) {
 
     return (
-        <Box sx={{ width: "100%" }}>
-            <Box
-                sx={{
-                    borderBottom: 1,
-                    borderColor: "divider",
-                    width: "91%",
-                    translate: "6%",
-                }}
-            >
-            </Box>
-            <Typography sx={{ translate: "7%" }}>
-                <b>Pedidos</b>
-            </Typography>
+        <Box sx={{ width: "100%" }} style={{ marginTop: "1em" }}>
+
             <Tablas key={0} value={props.value} index={0}>
                 {props.cargandoDatos ? (
                     <div style={{ textAlign: "center", paddingTop: "5%" }}>

@@ -60,7 +60,7 @@ export default function BandejaPedidos() {
         }
     }
     return (
-        <div style={{ margin: '2em', paddingLeft: '1em' }}>
+        <div style={{ margin: '1em', paddingLeft: '1em' }}>
             <Card>
                 <div className={styles.divBar}>Bandeja de pedidos</div>
                 <FiltroPedidos

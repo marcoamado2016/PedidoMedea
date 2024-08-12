@@ -89,7 +89,6 @@ export default function FiltroPedidos(props: {
                             label="estado"
                             value={props.estado}
                             onChange={onchangeEstado}
-
                             fullWidth
                         >
                             <MenuItem value="">Seleccionar un estado</MenuItem>
@@ -110,7 +109,7 @@ export default function FiltroPedidos(props: {
                 direction="row"
                 justifyContent="flex-end"
                 alignItems="center"
-             style={{marginTop:"1em"}}
+                style={{ marginTop: "1em" }}
                 columnSpacing={2}
             >
                 <Grid item>

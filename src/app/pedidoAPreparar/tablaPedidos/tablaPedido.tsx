@@ -63,11 +63,12 @@ export default function TablaPedidos(props: {
                                         </TableCell>
                                         <TableCell align="center">
                                             <Typography  variant="body1" fontFamily="Arial" fontSize="1.2rem" align="right">
-                                            {pedido.pizza != 0 ? pedido.pizza + ' PIZZAS, ' : ''}
-                                            {pedido.empanada != 0 ? pedido.empanada + ' EMPANADAS,' : ''}
-                                            {pedido.cono != 0 ? pedido.cono + ' CONOS DE PAPAS ' : ''}
-                                            {pedido.lomito != 0 ? pedido.lomito + ' LOMITOS ' : ''}
-                                            {pedido.hamburguesa != 0 ? pedido.hamburguesa + ' HAMBURGESAS ' : ''}
+                                            {pedido.hamburguesa != 0 ? pedido.detallehamburguesa ? pedido.hamburguesa + ' HAMBUR ' + pedido.detallehamburguesa + ' ' : pedido.hamburguesa + ' HAMBUR' : ''}
+                                            {pedido.pancho != 0 ? pedido.detallepancho ? pedido.pancho + ' PANCHO ' + pedido.detallepancho + ', ' : pedido.pancho + ' PANCHO' : ''}
+                                            {pedido.cono != 0 ? pedido.detallecono ? pedido.cono + ' CONO ' + pedido.detallecono + ', ' : pedido.cono + ' CONO' : ''}
+                                            {pedido.lomito != 0 ? pedido.detallelomo ? pedido.lomito + ' LOMOS ' + pedido.detallelomo + ' ' : pedido.lomito + ' LOMOS' : ''}
+                                            {pedido.pizza != 0 ? pedido.detallepizza ? pedido.pizza + ' PIZZAS ' + pedido.detallepizza + ', ' : pedido.pizza + ' PIZZAS' : ''}
+                                            {pedido.empanada != 0 ? pedido.detalleempanada ? pedido.empanada + ' EMP ' + pedido.detalleempanada + '' : pedido.empanada + ' EMP' : ''}
                                             </Typography>
 
                                         </TableCell>

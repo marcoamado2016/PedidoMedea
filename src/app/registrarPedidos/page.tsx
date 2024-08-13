@@ -115,7 +115,7 @@ export default function LoginPage(pedido?: any) {
                 setDefaultValues();
             } else {
                 startLoading()
-                formData.estado = 'Generado'
+                formData.estado = 'Preparar'
                 const respuesta = await pedidoFetch({
                     endpoint: 'save',
                     redirectRoute: '/registrarPedidos',

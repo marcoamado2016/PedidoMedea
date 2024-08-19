@@ -9,6 +9,7 @@ import MiDialog2 from "../MiDialog2/MiDialog2"
 import { Grid } from "@mui/material"
 import { Button } from "react-bootstrap"
 import { useRouter } from "next/navigation"
+import { PedidoServicio } from "./siguieneNumeo"
 
 interface OpenDialog {
     open: boolean;
@@ -26,7 +27,7 @@ const getCurrentDate = () => {
 export default function LoginPage(pedido?: any) {
     let router = useRouter();
     const { finishLoading, isLoading, startLoading } = useLoading()
-    const pedidoFetch = usePedidoFetch()
+    const pedidoFetch = usePedidoFetch();
     const [formValues, setFormValues] = useState({
         numeroPedido: '',
         fechaPedido: getCurrentDate(),
@@ -45,7 +46,19 @@ export default function LoginPage(pedido?: any) {
         detallehamburguesa: '',
         detallepancho: ''
     })
-
+    useEffect(() => {
+        let siguienteNumero = new PedidoServicio();
+        siguienteNumero.obtenerSiguienteNumeroPedido()
+            .then((data) => {
+                setFormValues(prevValue => (
+                    {
+                        ...prevValue,
+                        numeroPedido: data.numeroSiguiente.toString()
+                    }
+                ))
+            })
+            .catch((error) => console.log(error));
+    }, []);
     useEffect(() => {
         if (pedido?.pedido) {
             setFormValues({
@@ -68,6 +81,7 @@ export default function LoginPage(pedido?: any) {
             });
         }
     }, [pedido])
+
     const [dialogoExito, setDialogoExito] = React.useState<OpenDialog>({
         open: false,
         title: '',
@@ -130,6 +144,7 @@ export default function LoginPage(pedido?: any) {
                         title: "Registro de pedido",
                         message: 'Exito',
                     })
+
                 }
 
             }
@@ -198,6 +213,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="Numero de pedido"
                                 type="number"
                                 defaultValue={formValues.numeroPedido}
+
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>

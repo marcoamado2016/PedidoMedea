@@ -95,7 +95,7 @@ export default function FiltroPedidos(props: {
                             <MenuItem value="Cancelado">Cancelado</MenuItem>
                             <MenuItem value="Preparar">A Preparar pedido</MenuItem>
                             <MenuItem value="Generado">Generado</MenuItem>
-                            <MenuItem value="Terminado">Terminado</MenuItem>
+                            <MenuItem value="Listo">Listo</MenuItem>
                             <MenuItem value="Entregado">Entregado</MenuItem>
 
                         </Select>

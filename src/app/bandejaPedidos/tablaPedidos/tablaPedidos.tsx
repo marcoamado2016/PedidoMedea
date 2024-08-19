@@ -65,7 +65,6 @@ export default function TablaPedidos(props: {
                 formData: { numeroPedido, estado, nombre }
 
             })
-            console.log("numeroPedido, estado,nombre", numeroPedido, estado, nombre)
 
             if (estado === "Preparar") {
                 setDialogoExito({

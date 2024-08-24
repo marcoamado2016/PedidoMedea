@@ -65,14 +65,7 @@ export default function TablaPedidos(props: {
                 formData: { numeroPedido, estado, nombre }
 
             })
-            console.log("numeroPedido, estado,nombre", numeroPedido, estado, nombre)
-            if (estado === "Generado") {
-                setDialogoExito({
-                    open: true,
-                    title: "Pedido",
-                    message: 'Pedido generado con exito',
-                })
-            }
+
             if (estado === "Preparar") {
                 setDialogoExito({
                     open: true,
@@ -194,24 +187,7 @@ export default function TablaPedidos(props: {
                                                     alignItems="center"
                                                     spacing={3.5}
                                                 >
-                                                    <Grid item xs={1} xl={1}>
-                                                        <Tooltip
-                                                            title="Generar pedido"
-                                                            placement="top"
-                                                            arrow
-                                                        >
-                                                            <IconButton
-                                                                onClick={() => {
-                                                                    let estado = "Generado";
-                                                                    cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
-                                                                }}
-                                                                style={{ color: pedido.estado === 'Generado' ? "#00ff00" : '' }}
-                                                                disabled={siguienteEstado === "Generado" ? false : true}
-                                                            >
-                                                                <CreateNewFolderIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </Grid>
+        
                                                     <Grid item xs={1} xl={1}>
                                                         <Tooltip
                                                             title="A preparar pedido"

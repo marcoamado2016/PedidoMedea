@@ -44,7 +44,13 @@ export default function LoginPage(pedido?: any) {
         detallelomo: '',
         detallecono: '',
         detallehamburguesa: '',
-        detallepancho: ''
+        detallepancho: '',
+        precioempanada: '',
+        preciopizza: '',
+        preciolomito: '',
+        preciocono: '',
+        preciohamburguesa: '',
+        preciopancho: ''
     })
     useEffect(() => {
         let siguienteNumero = new PedidoServicio();
@@ -77,7 +83,13 @@ export default function LoginPage(pedido?: any) {
                 detallelomo: pedido?.pedido?.detallelomo,
                 detallecono: pedido?.pedido?.detallecono,
                 detallehamburguesa: pedido?.pedido?.detallehamburguesa,
-                detallepancho: pedido?.pedido?.detallepancho
+                detallepancho: pedido?.pedido?.detallepancho,
+                precioempanada: '',
+                preciopizza: '',
+                preciolomito: '',
+                preciocono: '',
+                preciohamburguesa: '',
+                preciopancho: ''
             });
         }
     }, [pedido])
@@ -104,7 +116,13 @@ export default function LoginPage(pedido?: any) {
             detallelomo: '',
             detallecono: '',
             detallehamburguesa: '',
-            detallepancho: ''
+            detallepancho: '',
+            precioempanada: '',
+            preciopizza: '',
+            preciolomito: '',
+            preciocono: '',
+            preciohamburguesa: '',
+            preciopancho: ''
         });
     }
 
@@ -226,7 +244,7 @@ export default function LoginPage(pedido?: any) {
                             />
                         </Grid>
 
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={1}>
                             <Form.Input
                                 label='Pizza'
                                 name='pizza'
@@ -244,9 +262,17 @@ export default function LoginPage(pedido?: any) {
                                 defaultValue={formValues.detallepizza}
                             />
                         </Grid>
+                        <Grid item xs={12} sm={1}>
+                            <Form.Input
+                                label='Precio pizza'
+                                name='preciopizza'
+                                placeholder="preciopizza"
+                                type="number"
+                                defaultValue={formValues.preciopizza}
+                            />
+                        </Grid>
 
-
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={1}>
                             <Form.Input
                                 label='Empanadas'
                                 name='empanada'
@@ -264,6 +290,15 @@ export default function LoginPage(pedido?: any) {
                                 defaultValue={formValues.detalleempanada}
                             />
                         </Grid>
+                        <Grid item xs={12} sm={1}>
+                            <Form.Input
+                                label='precio emp'
+                                name='precioempanada'
+                                placeholder="empanada"
+                                type="number"
+                                defaultValue={formValues.precioempanada}
+                            />
+                        </Grid>
                         <Grid item xs={12} sm={2}>
                             <Form.Input
                                 label='Cono de papas'
@@ -274,7 +309,7 @@ export default function LoginPage(pedido?: any) {
                             />
 
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12} sm={3}>
                             <Form.Input
                                 label='Detalle cono'
                                 name='detallecono'
@@ -283,7 +318,17 @@ export default function LoginPage(pedido?: any) {
                                 defaultValue={formValues.detallecono}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={1}>
+                            <Form.Input
+                                label='Precio cono'
+                                name='preciocono'
+                                placeholder="preciocono"
+                                type="number"
+                                defaultValue={formValues.preciocono}
+                            />
+
+                        </Grid>
+                        <Grid item xs={12} sm={1}>
                             <Form.Input
                                 label='Lomitos'
                                 name='lomito'
@@ -301,7 +346,16 @@ export default function LoginPage(pedido?: any) {
                                 defaultValue={formValues.detallelomo}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={1}>
+                            <Form.Input
+                                label='preciolomito'
+                                name='preciolomito'
+                                placeholder="preciolomito"
+                                type="number"
+                                defaultValue={formValues.preciolomito}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={1.3}>
                             <Form.Input
                                 label='Hamburguesa'
                                 name='hamburguesa'
@@ -310,13 +364,22 @@ export default function LoginPage(pedido?: any) {
                                 defaultValue={formValues.hamburguesa}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12} sm={3.4}>
                             <Form.Input
                                 label='Detalle Hamburguesa'
                                 name='detallehamburguesa'
                                 placeholder="deTalle hamburguesa"
                                 type="text"
                                 defaultValue={formValues.detallehamburguesa}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={1.3}>
+                            <Form.Input
+                                label='preciohamburguesa'
+                                name='preciohamburguesa'
+                                placeholder="preciohamburguesa"
+                                type="number"
+                                defaultValue={formValues.preciohamburguesa}
                             />
                         </Grid>
                         <Grid item xs={12} sm={2}>

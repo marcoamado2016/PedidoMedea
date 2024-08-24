@@ -84,12 +84,12 @@ export default function LoginPage(pedido?: any) {
                 detallecono: pedido?.pedido?.detallecono,
                 detallehamburguesa: pedido?.pedido?.detallehamburguesa,
                 detallepancho: pedido?.pedido?.detallepancho,
-                precioempanada: '',
-                preciopizza: '',
-                preciolomito: '',
-                preciocono: '',
-                preciohamburguesa: '',
-                preciopancho: ''
+                precioempanada: pedido?.pedido?.precioempanada,
+                preciopizza: pedido?.pedido?.preciopizza,
+                preciolomito: pedido?.pedido?.preciolomito,
+                preciocono: pedido?.pedido?.preciocono,
+                preciohamburguesa: pedido?.pedido?.preciohamburguesa,
+                preciopancho: pedido?.pedido?.preciopancho
             });
         }
     }, [pedido])
@@ -129,7 +129,7 @@ export default function LoginPage(pedido?: any) {
     const registrarPedido = async (formData: any) => {
 
         try {
-
+            console.log("formData: ", formData)
             if (pedido?.pedido || pedido.nombre) {
                 startLoading()
                 const pedidoCambiado = await pedidoFetch({
@@ -221,6 +221,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="Fecha de Pedido"
                                 type="date"
                                 defaultValue={formValues.fechaPedido}
+                                onchange={}
                             />
 
                         </Grid>
@@ -375,14 +376,14 @@ export default function LoginPage(pedido?: any) {
                         </Grid>
                         <Grid item xs={12} sm={1.3}>
                             <Form.Input
-                                label='preciohamburguesa'
-                                name='preciohamburguesa'
+                                label='Precio hambur'
+                                name='preciohambur'
                                 placeholder="preciohamburguesa"
                                 type="number"
                                 defaultValue={formValues.preciohamburguesa}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={1.3}>
                             <Form.Input
                                 label='pancho'
                                 name='pancho'
@@ -391,13 +392,22 @@ export default function LoginPage(pedido?: any) {
                                 defaultValue={formValues.hamburguesa}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12} sm={3.4}>
                             <Form.Input
                                 label='detalle pancho'
                                 name='detallepancho'
                                 placeholder="detalle pancho"
                                 type="text"
                                 defaultValue={formValues.detallepancho}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={1.3}>
+                            <Form.Input
+                                label='Precio pancho'
+                                name='preciopancho'
+                                placeholder="precio pancho"
+                                type="text"
+                                defaultValue={formValues.preciopancho}
                             />
                         </Grid>
                     </Grid>

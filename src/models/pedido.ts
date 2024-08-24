@@ -19,7 +19,12 @@ export interface IPedido {
     detallecono?: string;
     detallehamburguesa?: string;
     detallepancho?: string;
-
+    precioempanada?: string,
+    preciopizza?: string,
+    preciolomito?: string,
+    preciocono?: string,
+    preciohamburguesa?: string,
+    preciopancho?: string
 }
 
 export interface IPedidoSchema extends Document {
@@ -41,6 +46,12 @@ export interface IPedidoSchema extends Document {
     detallecono?: string;
     detallehamburguesa?: string;
     detallepancho?: string;
+    precioempanada?: string,
+    preciopizza?: string,
+    preciolomito?: string,
+    preciocono?: string,
+    preciohamburguesa?: string,
+    preciopancho?: string
 }
 const pedidoSchema = new Schema(
     {
@@ -86,7 +97,13 @@ const pedidoSchema = new Schema(
         detallelomo: { type: String },
         detallecono: { type: String },
         detallehamburguesa: { type: String },
-        detallepancho: { type: String }
+        detallepancho: { type: String },
+        precioempanada: { type: String },
+        preciopizza: { type: String },
+        preciolomito: { type: String },
+        preciocono: { type: String },
+        preciohamburguesa: { type: String },
+        preciopancho: { type: String }
     },
     {
         versionKey: false,

@@ -10,6 +10,7 @@ interface InputProps {
     label: string
     placeholder?: string
     defaultValue?: string
+   
 }
 
 export function Input({ label, name, placeholder, type, defaultValue }: InputProps) {

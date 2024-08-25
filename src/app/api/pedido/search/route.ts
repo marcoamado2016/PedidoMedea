@@ -11,10 +11,13 @@ export async function GET(request: NextRequest) {
 
     let nombreCliente = request.url.split('=')[3];
     let pedidoBuscado: any;
-    if (nombreCliente !== "1" && nombreCliente !== "15&numeroPagina") {
+    console.log("request.url?.split('=')[2] ", request.url?.split('=')[2])
+    if (nombreCliente !== "1" && nombreCliente !== "15&numeroPagina" && request.url?.split('=')[2] !== "Listo" && request.url?.split('=')[2] !== "Preparar") {
         nombreCliente = String(nombreCliente).toUpperCase();
         pedidoBuscado = await Pedido.find({ nombre: nombreCliente }).sort({ nombre: 1 });
+        console.log("1111")
     } else {
+        console.log("22222")
         let numeroPedido = await request.url?.split('=')[1];
         numeroPedido = numeroPedido?.slice(0, numeroPedido?.indexOf('&'))
         if (numeroPedido?.indexOf('&') !== -1) {
@@ -22,6 +25,7 @@ export async function GET(request: NextRequest) {
         }
         numeroPedido = numeroPedido.trim();
         let estado = request.url?.split('=')[2]
+        console.log("estado ", estado)
         if (estado === "Listo" && isNaN(numeroPagina) && isNaN(filasPaginado)) {
 
             pedidoBuscado = await Pedido.find({ estado: estado }).sort({ numeroPedido: 1 }).limit(7)
@@ -40,7 +44,7 @@ export async function GET(request: NextRequest) {
                 }
                 if (estado === undefined && convertirEntero === 0) {
                     pedidoBuscado = await Pedido.find().sort({ numeroPedido: 1 })
-               
+
                 }
                 if (estado != "15" && convertirEntero !== 0) {
                     pedidoBuscado = await Pedido.find({ numeroPedido: numeroPedido, estado: estado }).sort({ numeroPedido: 1 })

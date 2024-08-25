@@ -31,7 +31,11 @@ export default function TablaPedidos(props: {
     numeroPaginado: number;
     setNumeroPaginado: Dispatch<SetStateAction<number>>
     paginaSeleccionada: number;
-    setPaginaSeleccionada: Dispatch<SetStateAction<number>>
+    estado: string,
+    setEstado: Dispatch<SetStateAction<string>>;
+    setPaginaSeleccionada: Dispatch<SetStateAction<number>>;
+    nombreCliente: string;
+    setNombreCliente: Dispatch<SetStateAction<string>>;
 }) {
     const [forceUpdate, setForceUpdate] = useState(false);
     const pedidioRouter = usePedidoFetch();
@@ -187,7 +191,7 @@ export default function TablaPedidos(props: {
                                                     alignItems="center"
                                                     spacing={3.5}
                                                 >
-        
+
                                                     <Grid item xs={1} xl={1}>
                                                         <Tooltip
                                                             title="A preparar pedido"

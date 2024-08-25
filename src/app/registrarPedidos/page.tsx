@@ -221,7 +221,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="Fecha de Pedido"
                                 type="date"
                                 defaultValue={formValues.fechaPedido}
-                                onchange={}
+
                             />
 
                         </Grid>

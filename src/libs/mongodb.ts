@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const MONGO_URL = process.env.MONGO_LOCAL
+const MONGO_URL = process.env.MONGODB_ATLAS
 
 export const connectMongoDB = async () => {
     try {

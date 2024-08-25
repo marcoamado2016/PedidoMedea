@@ -37,8 +37,11 @@ export default function ContenedorTabla(props: {
     numeroPaginado: number;
     setNumeroPaginado: Dispatch<SetStateAction<number>>
     paginaSeleccionada: number;
+    estado:string
+    setEstado: Dispatch<SetStateAction<string>>;
     setPaginaSeleccionada: Dispatch<SetStateAction<number>>
-
+    nombreCliente: string;
+    setNombreCliente: Dispatch<SetStateAction<string>>;
 }) {
 
     return (
@@ -60,6 +63,10 @@ export default function ContenedorTabla(props: {
                             setNumeroPaginado={props.setNumeroPaginado}
                             paginaSeleccionada={props.paginaSeleccionada}
                             setPaginaSeleccionada={props.setPaginaSeleccionada}
+                            estado={props.estado}
+                            setEstado={props.setEstado}
+                            nombreCliente={props.nombreCliente}
+                            setNombreCliente={props.setNombreCliente}
                         />
                     )
                 )}

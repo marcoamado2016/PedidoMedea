@@ -24,7 +24,8 @@ export interface IPedido {
     preciolomito?: string,
     preciocono?: string,
     preciohamburguesa?: string,
-    preciopancho?: string
+    preciopancho?: string,
+    total?: string
 }
 
 export interface IPedidoSchema extends Document {
@@ -51,7 +52,8 @@ export interface IPedidoSchema extends Document {
     preciolomito?: string,
     preciocono?: string,
     preciohamburguesa?: string,
-    preciopancho?: string
+    preciopancho?: string,
+    total?: string
 }
 const pedidoSchema = new Schema(
     {
@@ -103,7 +105,8 @@ const pedidoSchema = new Schema(
         preciolomito: { type: String },
         preciocono: { type: String },
         preciohamburguesa: { type: String },
-        preciopancho: { type: String }
+        preciopancho: { type: String },
+        total: { type: String }
     },
     {
         versionKey: false,

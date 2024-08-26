@@ -50,7 +50,8 @@ export default function LoginPage(pedido?: any) {
         preciolomito: '',
         preciocono: '',
         preciohamburguesa: '',
-        preciopancho: ''
+        preciopancho: '',
+        total: ''
     })
     useEffect(() => {
         let siguienteNumero = new PedidoServicio();
@@ -89,16 +90,52 @@ export default function LoginPage(pedido?: any) {
                 preciolomito: pedido?.pedido?.preciolomito,
                 preciocono: pedido?.pedido?.preciocono,
                 preciohamburguesa: pedido?.pedido?.preciohamburguesa,
-                preciopancho: pedido?.pedido?.preciopancho
+                preciopancho: pedido?.pedido?.preciopancho,
+                total: pedido?.pedido?.total
             });
         }
     }, [pedido])
 
+    const [total, setTotal] = useState<number>(0);
+
+    useEffect(() => {
+        const calcularTotal = () => {
+            console.log("-----------------------------------")
+            console.log("formValues.preciopizza ", formValues.preciopizza)
+            console.log("formValues.preciocono ", formValues.preciocono)
+            console.log("formValues.preciohamburguesa ", formValues.preciohamburguesa)
+            console.log("formValues.preciolomito", formValues.preciolomito)
+            console.log("formValues.precioempanada ", formValues.precioempanada)
+            console.log("-----------------------------------")
+            const suma = (parseFloat(formValues.preciocono) || 0) +
+                (parseFloat(formValues.precioempanada) || 0) +
+                (parseFloat(formValues.preciohamburguesa) || 0) +
+                (parseFloat(formValues.preciolomito) || 0) +
+                (parseFloat(formValues.preciopancho) || 0) +
+                (parseFloat(formValues.preciopizza) || 0);
+
+            console.log("suma ", suma)
+            setTotal(suma)
+        }
+        calcularTotal();
+    }, [formValues])
+    console.log("VALOR FUERA ", total)
     const [dialogoExito, setDialogoExito] = React.useState<OpenDialog>({
         open: false,
         title: '',
         message: ''
     })
+    const handleChangeInput = (nombre: string, valor: string) => {
+        console.log("nombre ", nombre, "valor ", valor)
+        setFormValues(value => (
+            {
+                ...value,
+                [nombre]: valor
+            }
+        ))
+
+
+    }
     const setDefaultValues = () => {
         setFormValues({
             detalle: '',
@@ -122,12 +159,11 @@ export default function LoginPage(pedido?: any) {
             preciolomito: '',
             preciocono: '',
             preciohamburguesa: '',
-            preciopancho: ''
+            preciopancho: '',
+            total: ''
         });
     }
-
     const registrarPedido = async (formData: any) => {
-
         try {
             console.log("formData: ", formData)
             if (pedido?.pedido || pedido.nombre) {
@@ -153,7 +189,6 @@ export default function LoginPage(pedido?: any) {
                     redirectRoute: '/registrarPedidos',
                     formData
                 })
-
                 finishLoading();
                 setDefaultValues();
                 if (respuesta.status == 200) {
@@ -162,12 +197,8 @@ export default function LoginPage(pedido?: any) {
                         title: "Registro de pedido",
                         message: 'Exito',
                     })
-
                 }
-
             }
-
-
         } catch (error: any) {
             console.error("Error al registrar el pedido ", error)
             if (error?.response?.status === 409) {
@@ -203,7 +234,6 @@ export default function LoginPage(pedido?: any) {
 
             }
         }
-
     }
     return (
         <>
@@ -214,7 +244,7 @@ export default function LoginPage(pedido?: any) {
                     onSubmit={registrarPedido}
                 >
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={12}>
+                        <Grid item xs={12} sm={6}>
                             <Form.Input
                                 label='Fecha Pedido'
                                 name='fechaPedido'
@@ -222,6 +252,17 @@ export default function LoginPage(pedido?: any) {
                                 type="date"
                                 defaultValue={formValues.fechaPedido}
 
+                            />
+
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Form.Input
+                                label='Total a pagar $'
+                                name='total'
+                                type="text"
+                                defaultValue={String(total)}
+                                disable={true}
+                                color={'gray'}
                             />
 
                         </Grid>
@@ -270,6 +311,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="preciopizza"
                                 type="number"
                                 defaultValue={formValues.preciopizza}
+                                onChange={(e) => handleChangeInput("preciopizza", e.target.value)}
                             />
                         </Grid>
 
@@ -298,6 +340,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="empanada"
                                 type="number"
                                 defaultValue={formValues.precioempanada}
+                                onChange={(e) => handleChangeInput("precioempanada", e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={2}>
@@ -326,6 +369,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="preciocono"
                                 type="number"
                                 defaultValue={formValues.preciocono}
+                                onChange={(e) => handleChangeInput("preciocono", e.target.value)}
                             />
 
                         </Grid>
@@ -354,6 +398,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="preciolomito"
                                 type="number"
                                 defaultValue={formValues.preciolomito}
+                                onChange={(e) => handleChangeInput("preciolomito", e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={1.3}>
@@ -381,6 +426,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="preciohamburguesa"
                                 type="number"
                                 defaultValue={formValues.preciohamburguesa}
+                                onChange={(e) => handleChangeInput("preciohamburguesa", e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={1.3}>
@@ -389,7 +435,7 @@ export default function LoginPage(pedido?: any) {
                                 name='pancho'
                                 placeholder="pancho"
                                 type="number"
-                                defaultValue={formValues.hamburguesa}
+                                defaultValue={formValues.pancho}
                             />
                         </Grid>
                         <Grid item xs={12} sm={3.4}>
@@ -408,6 +454,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="precio pancho"
                                 type="text"
                                 defaultValue={formValues.preciopancho}
+                                onChange={(e) => handleChangeInput("preciopancho", e.target.value)}
                             />
                         </Grid>
                     </Grid>

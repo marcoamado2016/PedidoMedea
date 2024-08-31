@@ -58,7 +58,7 @@ export default function ContenedorTabla(props: {
             >
             </Box>
             <Typography sx={{ translate: "7%" }}>
-                <b>Estados de pedidos</b>
+                <b>JOVENES M.E.D.E.A</b>
             </Typography>
             <Tablas key={0} value={value} index={0}>
                 {cargandoDatos ? (

@@ -9,7 +9,7 @@ import MiDialog2 from "../MiDialog2/MiDialog2"
 import { Grid } from "@mui/material"
 import { Button } from "react-bootstrap"
 import { useRouter } from "next/navigation"
-import { PedidoServicio } from "./siguieneNumeo"
+import { PedidoServicio } from "../api/apiPedidos/pedidos.api"
 
 interface OpenDialog {
     open: boolean;
@@ -100,33 +100,23 @@ export default function LoginPage(pedido?: any) {
 
     useEffect(() => {
         const calcularTotal = () => {
-            console.log("-----------------------------------")
-            console.log("formValues.preciopizza ", formValues.preciopizza)
-            console.log("formValues.preciocono ", formValues.preciocono)
-            console.log("formValues.preciohamburguesa ", formValues.preciohamburguesa)
-            console.log("formValues.preciolomito", formValues.preciolomito)
-            console.log("formValues.precioempanada ", formValues.precioempanada)
-            console.log("-----------------------------------")
+
             const suma = (parseFloat(formValues.preciocono) || 0) +
                 (parseFloat(formValues.precioempanada) || 0) +
                 (parseFloat(formValues.preciohamburguesa) || 0) +
                 (parseFloat(formValues.preciolomito) || 0) +
                 (parseFloat(formValues.preciopancho) || 0) +
                 (parseFloat(formValues.preciopizza) || 0);
-
-            console.log("suma ", suma)
             setTotal(suma)
         }
         calcularTotal();
     }, [formValues])
-    console.log("VALOR FUERA ", total)
     const [dialogoExito, setDialogoExito] = React.useState<OpenDialog>({
         open: false,
         title: '',
         message: ''
     })
     const handleChangeInput = (nombre: string, valor: string) => {
-        console.log("nombre ", nombre, "valor ", valor)
         setFormValues(value => (
             {
                 ...value,
@@ -164,8 +154,8 @@ export default function LoginPage(pedido?: any) {
         });
     }
     const registrarPedido = async (formData: any) => {
+        console.log("FORM DATA ",formData)
         try {
-            console.log("formData: ", formData)
             if (pedido?.pedido || pedido.nombre) {
                 startLoading()
                 const pedidoCambiado = await pedidoFetch({

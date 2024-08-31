@@ -14,14 +14,15 @@ export interface PropsPedido {
     lomito?: number;
     cono?: number;
     hambuerguesa?: number;
+    tiempoListo?: string
 }
 
 export async function POST(request: NextRequest) {
     try {
         await connectMongoDB();
         const body: PropsPedido = await request.json();
-        const { numeroPedido, detalle, fechaPedido, estado, nombre, empanada, pizza, lomito, cono, hambuerguesa } = body;
-        console.log("body ",body)
+        const { numeroPedido, detalle, fechaPedido, estado, nombre, empanada, pizza, lomito, cono, hambuerguesa, tiempoListo } = body;
+        console.log("body ", body)
 
         if (!numeroPedido && !nombre) {
             return NextResponse.json(
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
         }
 
         if (pedidoEncontrado) {
-            console.log("pedidoEncontrado ",pedidoEncontrado)
+            console.log("pedidoEncontrado ", pedidoEncontrado)
             pedidoEncontrado.detalle = detalle ? detalle : pedidoEncontrado.detalle;
             pedidoEncontrado.fechaPedido = fechaPedido ? fechaPedido : pedidoEncontrado.fechaPedido;
             pedidoEncontrado.estado = estado ? estado : pedidoEncontrado.estado;
@@ -53,6 +54,7 @@ export async function POST(request: NextRequest) {
             pedidoEncontrado.lomito = lomito ? lomito : pedidoEncontrado.lomito;
             pedidoEncontrado.cono = cono ? cono : pedidoEncontrado.cono;
             pedidoEncontrado.hambuerguesa = hambuerguesa ? hambuerguesa : pedidoEncontrado.hambuerguesa;
+            pedidoEncontrado.hambuerguesa = tiempoListo ? tiempoListo : pedidoEncontrado.tiempoListo;
             pedidoEncontrado.save();
         }
 

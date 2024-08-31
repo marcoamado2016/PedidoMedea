@@ -19,7 +19,6 @@ export default function TablaPedidos(props: {
     datosTabla: any[];
     value?: number;
 }) {
-    const router = useRouter()
     const [dialogoExito, setDialogoExito] = React.useState<OpenDialog>({
         open: false,
         title: '',
@@ -38,13 +37,13 @@ export default function TablaPedidos(props: {
                         <Table sx={{ minWidth: 400 }} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center" style={{ color: "#00519b" }}>
+                                    <TableCell align="center" style={{ color: "#00519b", fontSize: '25px' }}>
                                         <b>NUMERO</b>
                                     </TableCell >
-                                    <TableCell align="center" style={{ color: "#00519b" }}>
+                                    <TableCell align="center" style={{ color: "#00519b", fontSize: '25px' }}>
                                         <b>NOMBRE</b>
                                     </TableCell >
-                                    <TableCell align="center" style={{ color: "#00519b" }}>
+                                    <TableCell align="center" style={{ color: "#00519b", fontSize: '25px' }}>
                                         <b>ESTADO</b>
                                     </TableCell>
                                 </TableRow>
@@ -54,13 +53,13 @@ export default function TablaPedidos(props: {
                                     <TableRow
                                         key={pedido.numeroPedido}
                                         sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                                        <TableCell align="center" style={{ fontSize: '30px', fontFamily: 'Arial' }} >
+                                        <TableCell align="center" style={{ fontSize: '90px', fontFamily: 'Arial' }} >
                                             {pedido.numeroPedido}
                                         </TableCell>
-                                        <TableCell align="center" style={{ fontSize: '30px', fontFamily: 'Arial' }} >
+                                        <TableCell align="center" style={{ fontSize: '90px', fontFamily: 'Arial' }} >
                                             {pedido.nombre}
                                         </TableCell>
-                                        <TableCell align="center" style={{ fontSize: '30px', fontFamily: 'Arial' }}>
+                                        <TableCell align="center" style={{ fontSize: '90px', fontFamily: 'Arial' }}>
                                             <Grid
                                                 container
                                                 direction="row"
@@ -77,7 +76,7 @@ export default function TablaPedidos(props: {
                                                     >
                                                         <div>
 
-                                                            <Typography style={{ fontSize: '30px', fontFamily: 'Arial' }}>{pedido.estado}</Typography>
+                                                            <Typography style={{ fontSize: '90px', fontFamily: 'Arial' }}>{pedido.estado}</Typography>
                                                         </div>
 
                                                     </Tooltip>

@@ -10,6 +10,7 @@ import { Grid } from "@mui/material"
 import { Button } from "react-bootstrap"
 import { useRouter } from "next/navigation"
 import { PedidoServicio } from "../api/apiPedidos/pedidos.api"
+import { ProductoPrecioService } from "../api/apiPrecios/precios.api"
 
 interface OpenDialog {
     open: boolean;
@@ -28,6 +29,14 @@ export default function LoginPage(pedido?: any) {
     let router = useRouter();
     const { finishLoading, isLoading, startLoading } = useLoading()
     const pedidoFetch = usePedidoFetch();
+    const [empanada, setEmpanada] = useState<string>("0");
+    const [empanadam, setEmpanadam] = useState<string>("0");
+    const [empanadau, setEmpanadau] = useState<string>("0");
+    const [hamburguesa, setHamburguesa] = useState<string>("0");
+    const [lomito, setLomito] = useState<string>("0");
+    const [pizza, setPizza] = useState<string>("0");
+    const [pizzam, setPizzam] = useState<string>("0");
+    const [cono, setCono] = useState<string>("0")
     const [formValues, setFormValues] = useState({
         numeroPedido: '',
         fechaPedido: pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? pedido?.pedido?.fechaPedido : getCurrentDate(),
@@ -101,7 +110,37 @@ export default function LoginPage(pedido?: any) {
 
     useEffect(() => {
         const calcularTotal = () => {
-
+            if (formValues.pizza === "0.5") {
+                if (pizzam !== "0") {
+                    formValues.preciopizza = pizzam;
+                }
+            }
+            if (formValues.pizza !== "0.5") {
+                if (pizza !== "0") {
+                    formValues.preciopizza = String(parseFloat(pizza) * parseFloat(formValues.pizza));
+                }
+            }
+            if (cono) {
+                formValues.preciocono = String(parseFloat(cono) * parseFloat(formValues.cono));
+            }
+            if (hamburguesa) {
+                formValues.preciohamburguesa = String(parseFloat(hamburguesa) * parseFloat(formValues.hamburguesa));
+            }
+            if (lomito) {
+                formValues.preciolomito = String(parseFloat(lomito) * parseFloat(formValues.lomito));
+            }
+            if (empanadau && (formValues.empanada !== "6" && formValues.empanada !== "12")) {
+                console.log("1")
+                formValues.precioempanada = String(parseFloat(empanadau) * parseFloat(formValues.empanada));
+            }
+            if (empanadam && formValues.empanada === "6") {
+                console.log("2")
+                formValues.precioempanada = empanadam;
+            }
+            if (empanada && formValues.empanada === "12") {
+                console.log("3")
+                formValues.precioempanada = empanada;
+            }
             const suma = (parseFloat(formValues.preciocono) || 0) +
                 (parseFloat(formValues.precioempanada) || 0) +
                 (parseFloat(formValues.preciohamburguesa) || 0) +
@@ -112,12 +151,32 @@ export default function LoginPage(pedido?: any) {
         }
         calcularTotal();
     }, [formValues])
+    let preciosProducto = new ProductoPrecioService()
+    preciosProducto.obtenerPrecios().then((response) => {
+        response.productoPrecio[0].empanada !== "0" ? setEmpanada(response.productoPrecio[0].empanada) : setEmpanada("0");
+        response.productoPrecio[0].hamburguesa !== "0" ? setHamburguesa(response.productoPrecio[0].hamburguesa) : setHamburguesa("0");
+        response.productoPrecio[0].empanadam !== "0" ? setEmpanadam(response.productoPrecio[0].empanadam) : setEmpanadam("0");
+        response.productoPrecio[0].empanadau !== "0" ? setEmpanadau(response.productoPrecio[0].empanadau) : setEmpanadau("0");
+        response.productoPrecio[0].lomito !== "0" ? setLomito(response.productoPrecio[0].lomito) : setLomito("0");
+        response.productoPrecio[0].pizza !== "0" ? setPizza(response.productoPrecio[0].pizza) : setPizza("0");
+        response.productoPrecio[0].pizzam !== "0" ? setPizzam(response.productoPrecio[0].pizzam) : setPizzam("0");
+        response.productoPrecio[0].cono !== "0" ? setCono(response.productoPrecio[0].cono) : setCono("0");
+
+    }).catch((error) => console.log("Error precio ", error))
     const [dialogoExito, setDialogoExito] = React.useState<OpenDialog>({
         open: false,
         title: '',
         message: ''
     })
     const handleChangeInput = (nombre: string, valor: string) => {
+        setFormValues(value => (
+            {
+                ...value,
+                [nombre]: valor
+            }
+        ))
+    }
+    const handleChangeInput1 = (nombre: string, valor: string) => {
         setFormValues(value => (
             {
                 ...value,
@@ -283,6 +342,7 @@ export default function LoginPage(pedido?: any) {
                                 type="number"
                                 defaultValue={formValues.pizza}
                                 disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
+                                onChange={(e) => handleChangeInput1("pizza", e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={4}>
@@ -315,6 +375,7 @@ export default function LoginPage(pedido?: any) {
                                 type="number"
                                 defaultValue={formValues.empanada}
                                 disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
+                                onChange={(e) => handleChangeInput1("empanada", e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={4}>
@@ -346,6 +407,7 @@ export default function LoginPage(pedido?: any) {
                                 type="number"
                                 defaultValue={formValues.cono}
                                 disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
+                                onChange={(e) => handleChangeInput1("cono", e.target.value)}
                             />
 
                         </Grid>
@@ -379,6 +441,7 @@ export default function LoginPage(pedido?: any) {
                                 type="number"
                                 defaultValue={formValues.lomito}
                                 disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
+                                onChange={(e) => handleChangeInput1("lomito", e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={4}>
@@ -410,6 +473,7 @@ export default function LoginPage(pedido?: any) {
                                 type="number"
                                 defaultValue={formValues.hamburguesa}
                                 disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
+                                onChange={(e) => handleChangeInput1("hamburguesa", e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={3.4}>
@@ -441,6 +505,7 @@ export default function LoginPage(pedido?: any) {
                                 type="number"
                                 defaultValue={formValues.pancho}
                                 disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
+                                onChange={(e) => handleChangeInput1("pancho", e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={3.4}>

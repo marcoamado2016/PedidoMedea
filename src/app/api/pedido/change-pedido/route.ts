@@ -44,7 +44,6 @@ export async function POST(request: NextRequest) {
         }
 
         if (pedidoEncontrado) {
-            console.log("pedidoEncontrado ", pedidoEncontrado)
             pedidoEncontrado.detalle = detalle ? detalle : pedidoEncontrado.detalle;
             pedidoEncontrado.fechaPedido = fechaPedido ? fechaPedido : pedidoEncontrado.fechaPedido;
             pedidoEncontrado.estado = estado ? estado : pedidoEncontrado.estado;

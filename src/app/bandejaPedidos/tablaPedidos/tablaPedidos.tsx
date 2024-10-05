@@ -130,6 +130,9 @@ export default function TablaPedidos(props: {
                                         <b>NRO</b>
                                     </TableCell >
                                     <TableCell align="center" style={{ color: "#00519b" }}>
+                                        <b>TOTAL</b>
+                                    </TableCell >
+                                    <TableCell align="center" style={{ color: "#00519b" }}>
                                         <b>NOMBRE</b>
                                     </TableCell>
                                     <TableCell align="center" style={{ color: "#00519b" }}>
@@ -152,6 +155,11 @@ export default function TablaPedidos(props: {
                                             <TableCell align="center">
                                                 <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
                                                     {pedido.numeroPedido}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Typography variant="body1" fontFamily="Arial" fontSize="1.2rem" align="center">
+                                                    {pedido.total}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">

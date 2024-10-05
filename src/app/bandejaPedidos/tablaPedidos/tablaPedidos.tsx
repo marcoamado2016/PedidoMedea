@@ -4,6 +4,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
 import CheckIcon from '@mui/icons-material/Check';
 import HourglassBottomOutlinedIcon from '@mui/icons-material/HourglassBottomOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import { usePedidoFetch } from "@/hooks/usePedidoFetch";
 import { SetStateAction, useState, Dispatch, useEffect } from "react";
@@ -53,11 +54,6 @@ export default function TablaPedidos(props: {
     const [estados, seEstados] = React.useState<string[]>(
         ["Generado", "Preparar", "Listo", "Entregado"]
     )
-    const calcularEstadoSiguiente = (estado: string) => {
-        const index = estados.indexOf(estado);
-        if (index != 3) return estados[index + 1];
-        return "";
-    }
     const [pedidoSeleccionado, setPedidoSeleccionado] = React.useState<PedisoSelccionado>({
         numeroPedido: 0, estado: "", detalle: "", fechaPedido: "", nombre: "", empanada: "", pizza: "", lomito: "", cono: "", hamburguesa: ""
     })
@@ -149,7 +145,6 @@ export default function TablaPedidos(props: {
                             </TableHead>
                             <TableBody >
                                 {props.datosTabla?.map((pedido) => {
-                                    const siguienteEstado = calcularEstadoSiguiente(pedido.estado);
                                     return (
                                         <TableRow
                                             key={pedido.numeroPedido}
@@ -191,10 +186,26 @@ export default function TablaPedidos(props: {
                                                     alignItems="center"
                                                     spacing={3.5}
                                                 >
-
                                                     <Grid item xs={1} xl={1}>
                                                         <Tooltip
-                                                            title="A preparar pedido"
+                                                            title="ver detalle"
+                                                            placement="top"
+                                                            arrow
+                                                        >
+                                                            <IconButton
+                                                                onClick={async () => {
+
+                                                                    await mostrarpedidoSeleccionado(pedido)
+                                                                }}
+                                                                disabled={false}
+                                                            >
+                                                                <VisibilityOutlinedIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Grid>
+                                                    <Grid item xs={1} xl={1}>
+                                                        <Tooltip
+                                                            title="Pedidos a preparar"
                                                             placement="top"
                                                             arrow
                                                         >
@@ -204,7 +215,7 @@ export default function TablaPedidos(props: {
                                                                     cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
                                                                 }}
                                                                 style={{ color: pedido.estado === 'Preparar' ? "#00ff00" : '' }}
-                                                                disabled={siguienteEstado === "Preparar" ? false : true}
+                                                                disabled={false}
                                                             >
                                                                 <HourglassBottomOutlinedIcon />
                                                             </IconButton>
@@ -212,7 +223,7 @@ export default function TablaPedidos(props: {
                                                     </Grid>
                                                     <Grid item xs={1} xl={1}>
                                                         <Tooltip
-                                                            title="Pedido Listo"
+                                                            title="Pedidos a retirar"
                                                             placement="top"
                                                             arrow
                                                         >
@@ -222,7 +233,7 @@ export default function TablaPedidos(props: {
                                                                     cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
                                                                 }}
                                                                 style={{ color: pedido.estado === 'Listo' ? "#00ff00" : '' }}
-                                                                disabled={siguienteEstado === "Listo" ? false : true}
+                                                                disabled={false}
                                                             >
                                                                 <CheckIcon />
                                                             </IconButton>
@@ -241,7 +252,7 @@ export default function TablaPedidos(props: {
                                                                     cambiarEstadoPedido(pedido.numeroPedido, estado, pedido.nombre)
                                                                 }}
                                                                 style={{ color: pedido.estado === 'Entregado' ? "#00ff00" : '' }}
-                                                                disabled={siguienteEstado === "Entregado" ? false : true}
+                                                                disabled={false}
                                                             >
                                                                 <DeliveryDiningIcon />
                                                             </IconButton>
@@ -255,8 +266,9 @@ export default function TablaPedidos(props: {
                                                             arrow
                                                         >
                                                             <IconButton
-                                                                onClick={() => {
-                                                                    mostrarpedidoSeleccionado(pedido)
+                                                                onClick={async () => {
+
+                                                                    await mostrarpedidoSeleccionado(pedido)
                                                                 }}
                                                                 disabled={true}
                                                             >
@@ -343,7 +355,7 @@ export default function TablaPedidos(props: {
                 ]}
             />
             <MiDialog3
-                open={pedidoSeleccionado.numeroPedido != 0 || pedidoSeleccionado.numeroPedido != 0 ? true : false}
+                open={dialogoExito1.open}
                 title={
                     dialogoExito1.title
                 }
@@ -351,7 +363,7 @@ export default function TablaPedidos(props: {
                 message={dialogoExito.message}
                 actions={[
                     {
-                        text: "Aceptar",
+                        text: "",
                         color: "primary",
                         variant: "contained",
                         onClick: () => {

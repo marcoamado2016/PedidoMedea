@@ -30,7 +30,7 @@ export default function LoginPage(pedido?: any) {
     const pedidoFetch = usePedidoFetch();
     const [formValues, setFormValues] = useState({
         numeroPedido: '',
-        fechaPedido: getCurrentDate(),
+        fechaPedido: pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? pedido?.pedido?.fechaPedido : getCurrentDate(),
         detalle: '',
         nombre: '',
         empanada: '',
@@ -68,6 +68,7 @@ export default function LoginPage(pedido?: any) {
     }, []);
     useEffect(() => {
         if (pedido?.pedido) {
+            console.log("pedido", pedido.pedido)
             setFormValues({
                 numeroPedido: pedido?.pedido?.numeroPedido,
                 fechaPedido: pedido?.pedido?.fechaPedido,
@@ -123,8 +124,6 @@ export default function LoginPage(pedido?: any) {
                 [nombre]: valor
             }
         ))
-
-
     }
     const setDefaultValues = () => {
         setFormValues({
@@ -154,7 +153,6 @@ export default function LoginPage(pedido?: any) {
         });
     }
     const registrarPedido = async (formData: any) => {
-        console.log("FORM DATA ",formData)
         try {
             if (pedido?.pedido || pedido.nombre) {
                 startLoading()
@@ -229,18 +227,19 @@ export default function LoginPage(pedido?: any) {
         <>
             <Grid container style={{ backgroundColor: '#419df3' }}>
                 <Form
-                    title={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? 'Editar pedido ' : 'Registrar Pedido'}
-                    descripcion={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? 'Formulario para editar pedido ' : "Formulario para registrar pedido"}
+                    title={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? 'Detalle pedido ' : 'Registrar Pedido'}
+                    descripcion={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? 'Formulario para ver detalle pedido ' : "Formulario para registrar pedido"}
                     onSubmit={registrarPedido}
                 >
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} >
                             <Form.Input
                                 label='Fecha Pedido'
                                 name='fechaPedido'
                                 placeholder="Fecha de Pedido"
                                 type="date"
                                 defaultValue={formValues.fechaPedido}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
 
                             />
 
@@ -254,7 +253,6 @@ export default function LoginPage(pedido?: any) {
                                 disable={true}
                                 color={'gray'}
                             />
-
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <Form.Input
@@ -262,8 +260,8 @@ export default function LoginPage(pedido?: any) {
                                 name='numeroPedido'
                                 placeholder="Numero de pedido"
                                 type="number"
-                                defaultValue={formValues.numeroPedido}
-
+                                defaultValue={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? pedido?.pedido?.numeroPedido : formValues.numeroPedido}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -273,6 +271,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="nombre"
                                 type="text"
                                 defaultValue={formValues.nombre}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
 
@@ -283,6 +282,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="pizza"
                                 type="number"
                                 defaultValue={formValues.pizza}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={4}>
@@ -292,6 +292,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="detalle de pizza"
                                 type="text"
                                 defaultValue={formValues.detallepizza}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={1}>
@@ -302,6 +303,7 @@ export default function LoginPage(pedido?: any) {
                                 type="number"
                                 defaultValue={formValues.preciopizza}
                                 onChange={(e) => handleChangeInput("preciopizza", e.target.value)}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
 
@@ -312,6 +314,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="empanada"
                                 type="number"
                                 defaultValue={formValues.empanada}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={4}>
@@ -321,6 +324,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="detalle de empanada"
                                 type="text"
                                 defaultValue={formValues.detalleempanada}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={1}>
@@ -331,6 +335,7 @@ export default function LoginPage(pedido?: any) {
                                 type="number"
                                 defaultValue={formValues.precioempanada}
                                 onChange={(e) => handleChangeInput("precioempanada", e.target.value)}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={2}>
@@ -340,6 +345,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="cono"
                                 type="number"
                                 defaultValue={formValues.cono}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
 
                         </Grid>
@@ -350,6 +356,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="detalle cono"
                                 type="text"
                                 defaultValue={formValues.detallecono}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={1}>
@@ -360,6 +367,7 @@ export default function LoginPage(pedido?: any) {
                                 type="number"
                                 defaultValue={formValues.preciocono}
                                 onChange={(e) => handleChangeInput("preciocono", e.target.value)}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
 
                         </Grid>
@@ -370,6 +378,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="lomito"
                                 type="number"
                                 defaultValue={formValues.lomito}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={4}>
@@ -379,6 +388,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="detalleLomo"
                                 type="text"
                                 defaultValue={formValues.detallelomo}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={1}>
@@ -389,6 +399,7 @@ export default function LoginPage(pedido?: any) {
                                 type="number"
                                 defaultValue={formValues.preciolomito}
                                 onChange={(e) => handleChangeInput("preciolomito", e.target.value)}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={1.3}>
@@ -398,6 +409,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="hamburguesa"
                                 type="number"
                                 defaultValue={formValues.hamburguesa}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={3.4}>
@@ -407,6 +419,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="deTalle hamburguesa"
                                 type="text"
                                 defaultValue={formValues.detallehamburguesa}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={1.3}>
@@ -417,6 +430,7 @@ export default function LoginPage(pedido?: any) {
                                 type="number"
                                 defaultValue={formValues.preciohamburguesa}
                                 onChange={(e) => handleChangeInput("preciohamburguesa", e.target.value)}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={1.3}>
@@ -426,6 +440,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="pancho"
                                 type="number"
                                 defaultValue={formValues.pancho}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={3.4}>
@@ -435,6 +450,7 @@ export default function LoginPage(pedido?: any) {
                                 placeholder="detalle pancho"
                                 type="text"
                                 defaultValue={formValues.detallepancho}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                         <Grid item xs={12} sm={1.3}>
@@ -445,15 +461,47 @@ export default function LoginPage(pedido?: any) {
                                 type="text"
                                 defaultValue={formValues.preciopancho}
                                 onChange={(e) => handleChangeInput("preciopancho", e.target.value)}
+                                disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
                         </Grid>
                     </Grid>
-                    <Grid container justifyContent="flex-end">
-                        <Form.SubmitButton
-                            buttonText={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? 'Editar pedido' : 'crear un pedido'}
-                            isLoading={isLoading}
-                        />
+                    <Grid container spacing={2} alignItems={"center"}>
+                        <Grid item xs={6} container justifyContent={"flex-start"}                 >
+                            <Button
+                                variant="outlined"
+                                style={{
+                                    backgroundColor: "black",
+                                    color: "white",
+                                    borderRadius: "8px",
+                                    width: "60px",
+                                    boxShadow: "1px 11px 16px -10px rgba(0,0,0.75,0.75)",
+                                }}
+                                onClick={() => {
+                                    let ruta = pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? "/bandejaPedidos" : "/home";
+                                    console.log("RUTA ", ruta)
+                                    if (pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre) {
+                                        router.replace(ruta)
+                                        window.location.reload();
+                                    } else {
+                                        router.push(ruta)
+                                    }
+                                }}
+                            >
+                                Volver
+                            </Button>
+
+
+                        </Grid>
+                        <Grid item xs={6} container justifyContent="flex-end">
+                            <Form.SubmitButton
+                                buttonText={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? 'Detalle pedido' : 'crear un pedido'}
+                                isLoading={isLoading}
+                                active={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
+
+                            />
+                        </Grid>
                     </Grid>
+
                 </Form>
 
             </Grid>
@@ -479,36 +527,6 @@ export default function LoginPage(pedido?: any) {
                     },
                 ]}
             />
-            <Grid
-                container
-                justifyContent="flex-end"
-                alignItems="center"
-                padding={"1em"}
-
-            >
-                <Grid item xs={1.1}>
-                    <Button
-
-                        variant="outlined"
-                        style={{
-                            backgroundColor: "black",
-                            color: "white",
-                            borderRadius: "8px",
-                            width: "60px",
-                            boxShadow: "1px 11px 16px -10px rgba(0,0,0.75,0.75)",
-                        }}
-                        onClick={() => {
-                            router.push("/home")
-                        }}
-
-                    >
-                        Volver
-                    </Button>
-                </Grid>
-
-            </Grid>
-
-
         </>
     )
 

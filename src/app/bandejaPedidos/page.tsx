@@ -18,7 +18,6 @@ export default function BandejaPedidos() {
     const [filasPaginado, setfilasPaginado] = useState<number>(15);
     const [numeroPaginado, setNumeroPaginado] = useState<number>(1);
     const [paginaSeleccionada, setPaginaSeleccionada] = useState(1);
-    const [cantidadTotalRegistros, setCantidadTotalRegistros] = useState<number>(0);
     const [nombreCliente, setNombreCliente] = useState<string>("");
     useEffect(() => {
         obtenerPedidos(value, estado, nombreCliente)
@@ -52,7 +51,7 @@ export default function BandejaPedidos() {
                 }
             }
         }
-
+    console.log("queryParams ",queryParams)
         try {
             const respuesta = await pedidoFetch({
                 endpoint: 'search',

@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
     preciohamburguesa = preciohamburguesa ? +preciohamburguesa : 0;
     preciopancho = preciopancho ? +preciopancho : 0;
     total = total ? +total : 0;
-
     if (lomito == 0 && pancho == 0 && empanada == 0 && pizza == 0 && hamburguesa == 0 && cono == 0) {
         return NextResponse.json(
             { message: 'Todos los campos son obligatorios' }, { status: 400 }
@@ -65,7 +64,7 @@ export async function POST(request: NextRequest) {
     const newPedido: IPedidoSchema = new Pedido({
         numeroPedido, detalle, fechaPedido, estado, nombre, empanada, lomito, pizza, cono, hamburguesa, pancho,
         detalleempanada, detallepizza, detallelomo, detallecono, detallehamburguesa, detallepancho,
-        preciopizza, preciolomito, preciocono, preciohamburguesa, preciopancho, total
+        preciopizza, preciolomito, preciocono, preciohamburguesa, preciopancho, total,precioempanada
     })
     try {
         await newPedido.save();

@@ -36,7 +36,8 @@ export default function RegistrarPrecio() {
         empanadau: '',
         cono: '',
         lomito: '',
-        hamburguesa: ''
+        hamburguesa: '',
+        pancho: ''
 
     })
     const productoFetch = useProductoPrecioFetch();
@@ -50,7 +51,8 @@ export default function RegistrarPrecio() {
             empanadau: '',
             cono: '',
             lomito: '',
-            hamburguesa: ''
+            hamburguesa: '',
+            pancho: ''
         })
     }
     const registrarPrducto = async (formData: any) => {
@@ -92,7 +94,7 @@ export default function RegistrarPrecio() {
                                 defaultValue={formValues.fechaProducto}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} >
+                        <Grid item xs={12} sm={3} >
                             <Form.Input
                                 label="hamburguesa"
                                 name="hamburguesa"
@@ -100,6 +102,16 @@ export default function RegistrarPrecio() {
                                 placeholder="hamburguesa"
                                 disable={false}
                                 defaultValue={formValues.hamburguesa}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={3} >
+                            <Form.Input
+                                label="Pancho"
+                                name="pancho"
+                                type="number"
+                                placeholder="pancho"
+                                disable={false}
+                                defaultValue={formValues.pancho}
                             />
                         </Grid>
                         <Grid item xs={12} sm={3} >

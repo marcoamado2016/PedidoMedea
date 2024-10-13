@@ -3,10 +3,11 @@
 import { Form } from "@/components/Form";
 import { useProductoPrecioFetch } from "@/hooks/useProductoPrecio";
 import { Grid } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MiDialog2 from "../MiDialog2/MiDialog2";
 import { Button } from "react-bootstrap";
 import { useRouter } from "next/navigation"
+import { usePedidoGetFetch } from "@/hooks/usePedidosGetFetch";
 interface OpenDialog {
     open: boolean;
     title: string;
@@ -22,6 +23,8 @@ const getCurrentDate = () => {
 }
 export default function TotalVendido() {
     let router = useRouter();
+    const pedidoFetch = usePedidoGetFetch();
+    const [pedidos, setPedidos] = useState<any[]>([]);
     const [dialogoExito, setDialogoExito] = React.useState<OpenDialog>({
         open: false,
         title: '',
@@ -34,10 +37,81 @@ export default function TotalVendido() {
         totalempanada: '',
         totalcono: '',
         totallomito: '',
-        total: ''
+        total: '',
+        totalpancho: ''
 
     })
-    const productoFetch = useProductoPrecioFetch();
+    const obtenerPedios = async (): Promise<any> => {
+        let queryParams: any = {}
+        queryParams = {
+            ...queryParams,
+            numeroPedido: 0,
+            filasPaginado: 15,
+            numeroPagina: 1
+
+        }
+        const productosVentidos = await pedidoFetch({
+            endpoint: 'search',
+            queryParams,
+            options: {}
+        })
+
+        return productosVentidos;
+    }
+    useEffect(() => {
+        obtenerPedios()
+            .then((response) => setPedidos(response.data.Pedido))
+            .catch((error) => console.log("ERROR", error))
+    }, [])
+
+    useEffect(() => {
+        let total: any = {};
+        total = {
+            empanada: 0,
+            hamburguesa: 0,
+            lomito: 0,
+            pizza: 0,
+            pancho: 0,
+            preciohamburguesa: 0.0,
+            preciolomito: 0,
+            preciopancho: 0,
+            preciopizza: 0.0,
+            precioempanada: 0,
+            total: 0
+        }
+        if (pedidos.length > 0) {
+            console.log("pedidos ", pedidos)
+            for (const p of pedidos) {
+                if (p.estado === "Entregado") {
+                    total['empanada'] = total['empanada'] + p.empanada || 0;
+                    total['hamburguesa'] = total['hamburguesa'] + p.hamburguesa || 0;
+                    total['lomito'] = total['lomito'] + p.lomito || 0;
+                    total['pizza'] = total['pizza'] + p.pizza || 0;
+                    total['pancho'] = total['pancho'] + p.pancho || 0;
+                    total['cono'] = total['cono'] + p.pancho || 0;
+                    total['preciohamburguesa'] = !(isNaN(p.preciohamburguesa)) && p.preciohamburguesa ? total['preciohamburguesa'] + parseFloat(p.preciohamburguesa) : total['preciohamburguesa'] + 0.0;
+                    total['preciolomito'] = !(isNaN(p.preciolomito)) && p.preciolomito ? total['preciolomito'] + parseFloat(p.preciolomito) : total['preciolomito'] + 0.0;
+                    total['preciopancho'] = !(isNaN(p.preciopancho)) && p.preciopancho ? total['preciopancho'] + parseFloat(p.preciopancho) : total['preciopancho'] + 0.0;
+                    total['preciopizza'] = !(isNaN(p.preciopizza)) && p.preciopizza ? total['preciopizza'] + parseFloat(p.preciopizza) : total['preciopizza'] + 0.0;
+                    total['precioempanada'] = !(isNaN(p.precioempanada)) && p.precioempanada ? total['precioempanada'] + parseFloat(p.precioempanada) : total['precioempanada'] + 0.0;
+                    total['total'] = !(isNaN(p.total)) && p.total ? total['total'] + parseFloat(p.total) : total['total'] + 0.0;
+                }
+
+            }
+
+            setFormValues({
+                total: total['total'] || '0',
+                fechaVenta: getCurrentDate(),
+                totalcono: total['cono'] || '0',
+                totalempanada: total['empanada'] || '0',
+                totalHamburguesa: total['hamburguesa'] || '0',
+                totallomito: total['lomito'] || '0',
+                totalpancho: total['pancho'] || '0',
+                totalpizza: total['pizza'] || '0'
+            })
+        }
+
+    }, [pedidos.length > 0])
     const setDefaultValues = () => {
         setFormValues({
             fechaVenta: getCurrentDate(),
@@ -46,10 +120,11 @@ export default function TotalVendido() {
             totalempanada: '',
             totalcono: '',
             totallomito: '',
-            total: ''
+            total: '',
+            totalpancho: ''
         })
     }
-    const registrarPrducto = async (formData: any) => {
+    const generaPdf = async (formData: any) => {
         try {
             console.log("")
         } catch (error) {
@@ -62,7 +137,7 @@ export default function TotalVendido() {
                 <Form
                     title={'ventas realizadas'}
                     descripcion={'Por cantidad'}
-                    onSubmit={registrarPrducto}
+                    onSubmit={generaPdf}
                 >
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={12} >
@@ -71,7 +146,7 @@ export default function TotalVendido() {
                                 name='fechaVenta'
                                 placeholder="Fecha de Venta"
                                 type="date"
-                                disable={false}
+                                disable={true}
                                 defaultValue={formValues.fechaVenta}
                             />
                         </Grid>
@@ -81,7 +156,7 @@ export default function TotalVendido() {
                                 name="totalhamburguesa"
                                 type="number"
                                 placeholder="Total Hamburguesa"
-                                disable={false}
+                                disable={true}
                                 defaultValue={formValues.totalHamburguesa}
                             />
                         </Grid>
@@ -91,7 +166,7 @@ export default function TotalVendido() {
                                 name="totalpizza"
                                 type="number"
                                 placeholder="Total Pizza"
-                                disable={false}
+                                disable={true}
                                 defaultValue={formValues.totalpizza}
                             />
                         </Grid>
@@ -101,7 +176,7 @@ export default function TotalVendido() {
                                 name="totalempanada"
                                 type="number"
                                 placeholder="Total empanadas"
-                                disable={false}
+                                disable={true}
                                 defaultValue={formValues.totalempanada}
                             />
                         </Grid>
@@ -111,7 +186,7 @@ export default function TotalVendido() {
                                 name="totalcono"
                                 type="number"
                                 placeholder="Total conos"
-                                disable={false}
+                                disable={true}
                                 defaultValue={formValues.totalcono}
                             />
                         </Grid>
@@ -121,8 +196,18 @@ export default function TotalVendido() {
                                 name="totallomito"
                                 type="number"
                                 placeholder="Total Lomitos"
-                                disable={false}
+                                disable={true}
                                 defaultValue={formValues.totallomito}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={3} >
+                            <Form.Input
+                                label="Cantidad Pancho"
+                                name="totalpancho"
+                                type="number"
+                                placeholder="Total Panchos"
+                                disable={true}
+                                defaultValue={formValues.totalpancho}
                             />
                         </Grid>
                         <Grid item xs={12} sm={3} >
@@ -131,7 +216,7 @@ export default function TotalVendido() {
                                 name="total"
                                 type="number"
                                 placeholder=" $ Total Ganancia"
-                                disable={false}
+                                disable={true}
                                 defaultValue={formValues.total}
                             />
                         </Grid>
@@ -156,7 +241,7 @@ export default function TotalVendido() {
                         </Grid>
                         <Grid item xs={6} container justifyContent="flex-end">
                             <Form.SubmitButton
-                                buttonText="calcular total"
+                                buttonText="descargar PDF"
                             />
                         </Grid>
                     </Grid>

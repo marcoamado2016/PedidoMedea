@@ -37,6 +37,9 @@ export default function LoginPage(pedido?: any) {
     const [pizza, setPizza] = useState<string>("0");
     const [pizzam, setPizzam] = useState<string>("0");
     const [cono, setCono] = useState<string>("0")
+    const [pancho, setPancho] = useState<string>("0");
+    const [contadorEmpanadas, setContadorEmpanadas] = useState<number>(0)
+    const [precioEmpanadas, setPrecioEmpanadas] = useState<string>("0")
     const [formValues, setFormValues] = useState({
         numeroPedido: '',
         fechaPedido: pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? pedido?.pedido?.fechaPedido : getCurrentDate(),
@@ -77,7 +80,6 @@ export default function LoginPage(pedido?: any) {
     }, []);
     useEffect(() => {
         if (pedido?.pedido) {
-            console.log("pedido", pedido.pedido)
             setFormValues({
                 numeroPedido: pedido?.pedido?.numeroPedido,
                 fechaPedido: pedido?.pedido?.fechaPedido,
@@ -105,11 +107,47 @@ export default function LoginPage(pedido?: any) {
             });
         }
     }, [pedido])
-
     const [total, setTotal] = useState<number>(0);
-
     useEffect(() => {
         const calcularTotal = () => {
+            let totalEmpanadas: number = 0;
+            if (empanada !== "0" && Number(formValues.empanada) > 12) {
+                totalEmpanadas = Number(formValues.empanada);
+            }
+            if (totalEmpanadas > 0) {
+                let contador: number = 0;
+                let contadorMedia: number = 0;
+                let unidades: number = 0;
+                for (let i = 1; i <= totalEmpanadas; i++) {
+                    contador = contador + 1;
+                    if (contador === 6) {
+                        contadorMedia = contadorMedia + 1;
+                        contador = 0;
+                    }
+                }
+                unidades = totalEmpanadas - (contadorMedia * 6) //unidades
+                if (contadorMedia > 0) {
+                    unidades * parseFloat(empanadau);
+                }
+                let docena: number = 0;
+                let contadorDocena: number = 0;
+                for (let i = 1; i <= contadorMedia; i++) {
+                    docena = docena + 6;
+                    if (docena == 12) {
+                        contadorDocena = contadorDocena + 1;
+                        docena = 0;
+                    }
+                }
+                let media: number = 0;
+                if (contadorMedia % 2 === 0) {
+                    media = 0;
+                } else {
+                    media = 1;
+                }
+                setContadorEmpanadas(contador);
+                formValues.precioempanada = String((unidades * parseFloat(empanadau)) + (media * parseFloat(empanadam)) + (contadorDocena * parseFloat(empanada)));
+
+            }
             if (formValues.pizza === "0.5") {
                 if (pizzam !== "0") {
                     formValues.preciopizza = pizzam;
@@ -120,37 +158,51 @@ export default function LoginPage(pedido?: any) {
                     formValues.preciopizza = String(parseFloat(pizza) * parseFloat(formValues.pizza));
                 }
             }
-            if (cono) {
+            if (cono !== "0") {
                 formValues.preciocono = String(parseFloat(cono) * parseFloat(formValues.cono));
             }
-            if (hamburguesa) {
+            if (hamburguesa !== "0") {
                 formValues.preciohamburguesa = String(parseFloat(hamburguesa) * parseFloat(formValues.hamburguesa));
             }
-            if (lomito) {
+            if (lomito !== "0") {
                 formValues.preciolomito = String(parseFloat(lomito) * parseFloat(formValues.lomito));
             }
-            if (empanadau && (formValues.empanada !== "6" && formValues.empanada !== "12")) {
-                console.log("1")
+            if (empanadau !== "0" && Number(formValues.empanada) < 6) {
+                console.log("empanadauempanadau ,", empanadau)
+                console.log("formValues.empanadaformValues.empanada 2", formValues.empanada)
                 formValues.precioempanada = String(parseFloat(empanadau) * parseFloat(formValues.empanada));
+                console.log("Entre 1")
             }
-            if (empanadam && formValues.empanada === "6") {
-                console.log("2")
+            if (empanadam !== "0" && formValues.empanada === "6") {
                 formValues.precioempanada = empanadam;
+                console.log("Entre 2")
             }
-            if (empanada && formValues.empanada === "12") {
-                console.log("3")
+            if (empanada !== "0" && formValues.empanada === "12") {
                 formValues.precioempanada = empanada;
+                console.log(" Entre 3")
             }
-            const suma = (parseFloat(formValues.preciocono) || 0) +
+            if (Number(formValues.empanada) > 6 && Number(formValues.empanada) < 12) {
+                let mediaDocena = parseFloat(formValues.empanada) - 6;
+                formValues.precioempanada = String((mediaDocena * parseFloat(empanadau)) + parseFloat(empanadam));
+            }
+            if (pancho !== "0") {
+                formValues.preciopancho = String(parseFloat(pancho) * parseFloat(formValues.pancho));
+            }
+            console.log("formValues.precioempanadaformValues.precioempanada ", formValues.precioempanada)
+            console.log("totalEmpanadastotalEmpanadastotalEmpanadas ", totalEmpanadas)
+            const suma = (parseFloat(cono === "0" ? String(parseFloat(formValues.cono) * parseFloat(formValues.preciocono)) : formValues.preciocono) || 0) +
                 (parseFloat(formValues.precioempanada) || 0) +
-                (parseFloat(formValues.preciohamburguesa) || 0) +
-                (parseFloat(formValues.preciolomito) || 0) +
-                (parseFloat(formValues.preciopancho) || 0) +
+                (parseFloat(hamburguesa === "0" ? String(parseFloat(formValues.hamburguesa) * parseFloat(formValues.preciohamburguesa)) : formValues.preciohamburguesa) || 0) +
+                (parseFloat(lomito === "0" ? String(parseFloat(formValues.lomito) * parseFloat(formValues.preciolomito)) : formValues.preciolomito) || 0) +
+                (parseFloat(pancho === "0" ? String(parseFloat(formValues.pancho) * parseFloat(formValues.preciopancho)) : formValues.preciopancho) || 0) +
                 (parseFloat(formValues.preciopizza) || 0);
             setTotal(suma)
         }
         calcularTotal();
-    }, [formValues])
+    }, [formValues, formValues.empanada])
+    useEffect(() => {
+        setContadorEmpanadas(0);
+    }, [formValues.empanada === ""])
     let preciosProducto = new ProductoPrecioService()
     preciosProducto.obtenerPrecios().then((response) => {
         response.productoPrecio[0].empanada !== "0" ? setEmpanada(response.productoPrecio[0].empanada) : setEmpanada("0");
@@ -161,6 +213,7 @@ export default function LoginPage(pedido?: any) {
         response.productoPrecio[0].pizza !== "0" ? setPizza(response.productoPrecio[0].pizza) : setPizza("0");
         response.productoPrecio[0].pizzam !== "0" ? setPizzam(response.productoPrecio[0].pizzam) : setPizzam("0");
         response.productoPrecio[0].cono !== "0" ? setCono(response.productoPrecio[0].cono) : setCono("0");
+        response.productoPrecio[0].pancho !== "0" ? setPancho(response.productoPrecio[0].precio) : setPancho("0");
 
     }).catch((error) => console.log("Error precio ", error))
     const [dialogoExito, setDialogoExito] = React.useState<OpenDialog>({
@@ -169,6 +222,7 @@ export default function LoginPage(pedido?: any) {
         message: ''
     })
     const handleChangeInput = (nombre: string, valor: string) => {
+        console.log("nombre: string, valor: string ", nombre, " : ", valor)
         setFormValues(value => (
             {
                 ...value,
@@ -177,6 +231,7 @@ export default function LoginPage(pedido?: any) {
         ))
     }
     const handleChangeInput1 = (nombre: string, valor: string) => {
+        console.log("Cantidad  nombre ", nombre, "  valor : ", valor)
         setFormValues(value => (
             {
                 ...value,
@@ -212,6 +267,7 @@ export default function LoginPage(pedido?: any) {
         });
     }
     const registrarPedido = async (formData: any) => {
+        console.log("formData ",formData)
         try {
             if (pedido?.pedido || pedido.nombre) {
                 startLoading()
@@ -489,7 +545,7 @@ export default function LoginPage(pedido?: any) {
                         <Grid item xs={12} sm={1.3}>
                             <Form.Input
                                 label='Precio hambur'
-                                name='preciohambur'
+                                name='preciohamburguesa'
                                 placeholder="preciohamburguesa"
                                 type="number"
                                 defaultValue={formValues.preciohamburguesa}

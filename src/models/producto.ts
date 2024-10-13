@@ -11,6 +11,7 @@ export interface IProducto {
     lomito?: string;
     hamburguesa?: string;
     fechaProducto?: string;
+    pancho?: string
 }
 export interface IProductoSchema extends Document {
     _id?: ObjectId | string | undefined;
@@ -23,6 +24,7 @@ export interface IProductoSchema extends Document {
     lomito?: string;
     hamburguesa?: string;
     fechaProducto?: string;
+    pancho?: string
 }
 
 const productoSchema = new Schema(
@@ -52,6 +54,9 @@ const productoSchema = new Schema(
             type: String
         },
         fechaProducto: {
+            type: String
+        },
+        pancho: {
             type: String
         }
     },

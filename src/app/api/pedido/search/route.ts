@@ -24,10 +24,10 @@ export async function GET(request: NextRequest) {
         let estado = request.url?.split('=')[2]
         if (estado === "Listo" && isNaN(numeroPagina) && isNaN(filasPaginado)) {
 
-            pedidoBuscado = await Pedido.find({ estado: estado }).sort({ numeroPedido: 1 }).limit(7)
+            pedidoBuscado = await Pedido.find({ estado: estado }).sort({ numeroPedido: 1 })
         } else {
             if (estado === "Preparar" && isNaN(numeroPagina) && isNaN(filasPaginado)) {
-                pedidoBuscado = await Pedido.find({ estado: estado }).sort({ numeroPedido: 1 }).limit(7)
+                pedidoBuscado = await Pedido.find({ estado: estado }).sort({ numeroPedido: 1 })
             } else {
                 estado = estado?.slice(0, estado?.indexOf('&'))
 

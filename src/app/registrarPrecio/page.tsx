@@ -3,10 +3,11 @@
 import { Form } from "@/components/Form";
 import { useProductoPrecioFetch } from "@/hooks/useProductoPrecio";
 import { Grid } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MiDialog2 from "../MiDialog2/MiDialog2";
 import { Button } from "react-bootstrap";
 import { useRouter } from "next/navigation"
+import { ProductoPrecioService } from "../api/apiPrecios/precios.api";
 interface OpenDialog {
     open: boolean;
     title: string;
@@ -22,6 +23,16 @@ const getCurrentDate = () => {
 }
 export default function RegistrarPrecio() {
     let router = useRouter();
+    const [empanada, setEmpanada] = useState<string>("");
+    const [empanadam, setEmpanadam] = useState<string>("");
+    const [empanadau, setEmpanadau] = useState<string>("");
+    const [hamburguesa, setHamburguesa] = useState<string>("");
+    const [lomito, setLomito] = useState<string>("");
+    const [pizza, setPizza] = useState<string>("");
+    const [pizzam, setPizzam] = useState<string>("");
+    const [cono, setCono] = useState<string>("")
+    const [pancho, setPancho] = useState<string>("");
+    const [fecha, setFecha] = useState<string>("")
     const [dialogoExito, setDialogoExito] = React.useState<OpenDialog>({
         open: false,
         title: '',
@@ -55,22 +66,77 @@ export default function RegistrarPrecio() {
             pancho: ''
         })
     }
+    useEffect(() => {
+        let precioProducto = new ProductoPrecioService();
+        precioProducto.obtenerPrecios()
+            .then((response) => {
+                if (response.productoPrecio[0]) {
+                    console.log("empanadau ", response.productoPrecio[0])
+                    response.productoPrecio[0].empanada !== "0" ? setEmpanada(response.productoPrecio[0].empanada) : setEmpanada("");
+                    response.productoPrecio[0].hamburguesa !== "0" ? setHamburguesa(response.productoPrecio[0].hamburguesa) : setHamburguesa("");
+                    response.productoPrecio[0].empanadam !== "0" ? setEmpanadam(response.productoPrecio[0].empanadam) : setEmpanadam("");
+                    response.productoPrecio[0].empanadau !== "0" ? setEmpanadau(response.productoPrecio[0].empanadau) : setEmpanadau("");
+                    response.productoPrecio[0].lomito !== "0" ? setLomito(response.productoPrecio[0].lomito) : setLomito("");
+                    response.productoPrecio[0].pizza !== "0" ? setPizza(response.productoPrecio[0].pizza) : setPizza("");
+                    response.productoPrecio[0].pizzam !== "0" ? setPizzam(response.productoPrecio[0].pizzam) : setPizzam("");
+                    response.productoPrecio[0].cono !== "0" ? setCono(response.productoPrecio[0].cono) : setCono("");
+                    response.productoPrecio[0].pancho !== "0" ? setPancho(response.productoPrecio[0].pancho) : setPancho("");
+                    response.productoPrecio[0].fechaProducto !== "" ? setFecha(response.productoPrecio[0].fechaProducto) : setFecha("");
+                }
+
+
+            }).catch((error) => console.log("Error obtener precio ", error))
+    }, [])
+
     const registrarPrducto = async (formData: any) => {
         try {
-            const producto = await productoFetch({
-                endpoind: 'save',
-                formData
-            })
-            console.log("producto ", producto)
-            if (producto.status === 200) {
-                console.log("Entre", producto.status)
-                setDialogoExito({
-                    open: true,
-                    title: "Precio de producto guardado ",
-                    message: 'Exito',
+            if (fecha !== "") {
+                formData.empanada = formData.empanada ? formData.empanada : empanada;
+                formData.pizza = formData.pizza ? formData.pizza : pizza;
+                formData.empanadam = formData.empanadam ? formData.empanadam : empanadam;
+                formData.pizzam = formData.pizzam ? formData.pizzam : pizzam;
+                formData.empanadau = formData.empanadau ? formData.empanadau : empanadau;
+                formData.cono = formData.cono ? formData.cono : cono;
+                formData.lomito = formData.lomito ? formData.lomito : lomito;
+                formData.hamburguesa = formData.hamburguesa ? formData.hamburguesa : hamburguesa;
+                formData.pancho = formData.pancho ? formData.pancho : pancho;
+                formData.fechaProducto = formData.fechaProducto ? formData.fechaProducto : fecha;
+                const productoModificado = await productoFetch({
+                    endpoind: 'change-producto',
+                    formData
                 })
+                if (productoModificado.status === 200) {
+                    setEmpanada(formData.empanada);
+                    setHamburguesa(formData.hamburguesa);
+                    setEmpanadam(formData.empanadam);
+                    setEmpanadau(formData.empanadau);
+                    setLomito(formData.lomito);
+                    setPizza(formData.pizza);
+                    setPizzam(formData.pizzam);
+                    setCono(formData.cono);
+                    setPancho(formData.pancho);
+                    setFecha(formData.fechaProducto);
+                    setDialogoExito({
+                        open: true,
+                        title: "Precio de producto modificado ",
+                        message: 'Exito',
+                    })
+                }
+            } else {
+                const producto = await productoFetch({
+                    endpoind: 'save',
+                    formData
+                })
+                console.log("producto ", producto)
+                if (producto.status === 200) {
+                    setDialogoExito({
+                        open: true,
+                        title: "Precio de producto guardado ",
+                        message: 'Exito',
+                    })
+                }
             }
-            setDefaultValues();
+
         } catch (error) {
             console.log("Error en el frontend ", error)
         }
@@ -80,7 +146,7 @@ export default function RegistrarPrecio() {
             <Grid container style={{ backgroundColor: '#419df3' }}>
                 <Form
                     title={'Formulario para registrar el precio de los productos'}
-                    descripcion={'Ingrese los precios por unidad'}
+                    descripcion={'Ingrese los precios por unidad de producto , si no lo quiere vender ponga cero(0)'}
                     onSubmit={registrarPrducto}
                 >
                     <Grid container spacing={2}>
@@ -101,7 +167,7 @@ export default function RegistrarPrecio() {
                                 type="number"
                                 placeholder="hamburguesa"
                                 disable={false}
-                                defaultValue={formValues.hamburguesa}
+                                defaultValue={hamburguesa !== "" ? hamburguesa : formValues.hamburguesa}
                             />
                         </Grid>
                         <Grid item xs={12} sm={3} >
@@ -111,7 +177,7 @@ export default function RegistrarPrecio() {
                                 type="number"
                                 placeholder="pancho"
                                 disable={false}
-                                defaultValue={formValues.pancho}
+                                defaultValue={pancho !== "" ? pancho : formValues.pancho}
                             />
                         </Grid>
                         <Grid item xs={12} sm={3} >
@@ -121,7 +187,7 @@ export default function RegistrarPrecio() {
                                 type="number"
                                 placeholder="pizza"
                                 disable={false}
-                                defaultValue={formValues.pizza}
+                                defaultValue={pizza !== "" ? pizza : formValues.pizza}
                             />
                         </Grid>
                         <Grid item xs={12} sm={3} >
@@ -131,7 +197,7 @@ export default function RegistrarPrecio() {
                                 type="number"
                                 placeholder="pizza"
                                 disable={false}
-                                defaultValue={formValues.pizzam}
+                                defaultValue={pizzam !== "" ? pizzam : formValues.pizzam}
                             />
                         </Grid>
                         <Grid item xs={12} sm={2} >
@@ -141,7 +207,7 @@ export default function RegistrarPrecio() {
                                 type="number"
                                 placeholder="empanada"
                                 disable={false}
-                                defaultValue={formValues.empanada}
+                                defaultValue={empanada !== "" ? empanada : formValues.empanada}
                             />
                         </Grid>
                         <Grid item xs={12} sm={2} >
@@ -151,7 +217,7 @@ export default function RegistrarPrecio() {
                                 type="number"
                                 placeholder="empanada"
                                 disable={false}
-                                defaultValue={formValues.empanadam}
+                                defaultValue={empanadam !== "" ? empanadam : formValues.empanadam}
                             />
                         </Grid>
                         <Grid item xs={12} sm={2} >
@@ -161,7 +227,7 @@ export default function RegistrarPrecio() {
                                 type="number"
                                 placeholder="empanada"
                                 disable={false}
-                                defaultValue={formValues.empanadau}
+                                defaultValue={empanadau !== "" ? empanadau : formValues.empanadau}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} >
@@ -171,7 +237,7 @@ export default function RegistrarPrecio() {
                                 type="number"
                                 placeholder="cono"
                                 disable={false}
-                                defaultValue={formValues.cono}
+                                defaultValue={cono !== "" ? cono : formValues.cono}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} >
@@ -181,7 +247,7 @@ export default function RegistrarPrecio() {
                                 type="number"
                                 placeholder="lomito"
                                 disable={false}
-                                defaultValue={formValues.lomito}
+                                defaultValue={lomito !== "" ? lomito : formValues.lomito}
                             />
                         </Grid>
                     </Grid>

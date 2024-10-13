@@ -5,7 +5,8 @@ import { NextResponse } from "next/server";
 export async function GET() {
     try {
         await connectMongoDB();
-        const precios = await Producto.find();
+        const fechaActual: string = new Date().toISOString().split('T')[0];
+        const precios = await Producto.find({ fechaProducto: fechaActual });
         return NextResponse.json(
             { productoPrecio: precios }, { status: 200 }
         )

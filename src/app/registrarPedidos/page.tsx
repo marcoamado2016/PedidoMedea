@@ -39,7 +39,6 @@ export default function LoginPage(pedido?: any) {
     const [cono, setCono] = useState<string>("0")
     const [pancho, setPancho] = useState<string>("0");
     const [contadorEmpanadas, setContadorEmpanadas] = useState<number>(0)
-    const [precioEmpanadas, setPrecioEmpanadas] = useState<string>("0")
     const [formValues, setFormValues] = useState({
         numeroPedido: '',
         fechaPedido: pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? pedido?.pedido?.fechaPedido : getCurrentDate(),
@@ -267,7 +266,6 @@ export default function LoginPage(pedido?: any) {
         });
     }
     const registrarPedido = async (formData: any) => {
-        console.log("formData ",formData)
         try {
             if (pedido?.pedido || pedido.nombre) {
                 startLoading()

@@ -80,7 +80,6 @@ export default function TotalVendido() {
             total: 0
         }
         if (pedidos.length > 0) {
-            console.log("pedidos ", pedidos)
             for (const p of pedidos) {
                 if (p.estado === "Entregado") {
                     total['empanada'] = total['empanada'] + p.empanada || 0;
@@ -98,7 +97,6 @@ export default function TotalVendido() {
                 }
 
             }
-
             setFormValues({
                 total: total['total'] || '0',
                 fechaVenta: getCurrentDate(),

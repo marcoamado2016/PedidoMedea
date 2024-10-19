@@ -11,6 +11,7 @@ import { Button } from "react-bootstrap"
 import { useRouter } from "next/navigation"
 import { PedidoServicio } from "../api/apiPedidos/pedidos.api"
 import { ProductoPrecioService } from "../api/apiPrecios/precios.api"
+import { StockService } from "../api/apiStock/stock.api"
 
 interface OpenDialog {
     open: boolean;
@@ -77,6 +78,10 @@ export default function LoginPage(pedido?: any) {
             })
             .catch((error) => console.log(error));
     }, []);
+    useEffect(()=>{
+      let stock = new StockService();
+          stock.obtenerStock()
+    },[])
     useEffect(() => {
         if (pedido?.pedido) {
             setFormValues({
@@ -204,6 +209,7 @@ export default function LoginPage(pedido?: any) {
     }, [formValues.empanada === ""])
     let preciosProducto = new ProductoPrecioService()
     preciosProducto.obtenerPrecios().then((response) => {
+        console.log("response.productoPrecio[0] ",response.productoPrecio[0])
         response.productoPrecio[0].empanada !== "0" ? setEmpanada(response.productoPrecio[0].empanada) : setEmpanada("0");
         response.productoPrecio[0].hamburguesa !== "0" ? setHamburguesa(response.productoPrecio[0].hamburguesa) : setHamburguesa("0");
         response.productoPrecio[0].empanadam !== "0" ? setEmpanadam(response.productoPrecio[0].empanadam) : setEmpanadam("0");
@@ -212,7 +218,7 @@ export default function LoginPage(pedido?: any) {
         response.productoPrecio[0].pizza !== "0" ? setPizza(response.productoPrecio[0].pizza) : setPizza("0");
         response.productoPrecio[0].pizzam !== "0" ? setPizzam(response.productoPrecio[0].pizzam) : setPizzam("0");
         response.productoPrecio[0].cono !== "0" ? setCono(response.productoPrecio[0].cono) : setCono("0");
-        response.productoPrecio[0].pancho !== "0" ? setPancho(response.productoPrecio[0].precio) : setPancho("0");
+        response.productoPrecio[0].pancho !== "0" ? setPancho(response.productoPrecio[0].pancho) : setPancho("0");
 
     }).catch((error) => console.log("Error precio ", error))
     const [dialogoExito, setDialogoExito] = React.useState<OpenDialog>({
@@ -221,7 +227,6 @@ export default function LoginPage(pedido?: any) {
         message: ''
     })
     const handleChangeInput = (nombre: string, valor: string) => {
-        console.log("nombre: string, valor: string ", nombre, " : ", valor)
         setFormValues(value => (
             {
                 ...value,
@@ -230,7 +235,6 @@ export default function LoginPage(pedido?: any) {
         ))
     }
     const handleChangeInput1 = (nombre: string, valor: string) => {
-        console.log("Cantidad  nombre ", nombre, "  valor : ", valor)
         setFormValues(value => (
             {
                 ...value,

@@ -71,7 +71,6 @@ export default function RegistrarPrecio() {
         precioProducto.obtenerPrecios()
             .then((response) => {
                 if (response.productoPrecio[0]) {
-                    console.log("empanadau ", response.productoPrecio[0])
                     response.productoPrecio[0].empanada !== "0" ? setEmpanada(response.productoPrecio[0].empanada) : setEmpanada("");
                     response.productoPrecio[0].hamburguesa !== "0" ? setHamburguesa(response.productoPrecio[0].hamburguesa) : setHamburguesa("");
                     response.productoPrecio[0].empanadam !== "0" ? setEmpanadam(response.productoPrecio[0].empanadam) : setEmpanadam("");

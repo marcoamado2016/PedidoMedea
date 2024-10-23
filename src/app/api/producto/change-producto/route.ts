@@ -16,9 +16,7 @@ export async function POST(request: NextRequest) {
     try {
         const body: PropsProucto = await request.json();
         const { cono, empanada, empanadam, empanadau, hamburguesa, pancho, lomito, pizza, pizzam, fechaProducto } = body;
-        console.log("body ",body)
         const productoActual = await Producto.findOne({ fechaProducto: fechaProducto });
-        console.log("productoActual ",productoActual)
         if (productoActual) {
             productoActual.pizza = pizza ? pizza : productoActual.pizza;
             productoActual.empanada = empanada ? empanada : productoActual.empanada;
@@ -29,8 +27,7 @@ export async function POST(request: NextRequest) {
             productoActual.lomito = lomito ? lomito : productoActual.lomito;
             productoActual.hamburguesa = hamburguesa ? hamburguesa : productoActual.hamburguesa;
             productoActual.pancho = pancho ? pancho : productoActual.pancho;
-            console.log("DESPUES pr productoActual ",productoActual)
-            productoActual.save();
+            await productoActual.save();
         }
         return NextResponse.json(
             { message: 'Producto modificado ok' },

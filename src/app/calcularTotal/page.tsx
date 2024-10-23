@@ -8,6 +8,7 @@ import MiDialog2 from "../MiDialog2/MiDialog2";
 import { Button } from "react-bootstrap";
 import { useRouter } from "next/navigation"
 import { usePedidoGetFetch } from "@/hooks/usePedidosGetFetch";
+import { PedidoServicio } from "../api/apiPedidos/pedidos.api";
 interface OpenDialog {
     open: boolean;
     title: string;
@@ -42,29 +43,36 @@ export default function TotalVendido() {
 
     })
     const obtenerPedios = async (): Promise<any> => {
-        let queryParams: any = {}
-        queryParams = {
-            ...queryParams,
-            numeroPedido: 0,
-            filasPaginado: 15,
-            numeroPagina: 1
-
-        }
-        const productosVentidos = await pedidoFetch({
-            endpoint: 'search',
-            queryParams,
-            options: {}
-        })
-
-        return productosVentidos;
     }
     useEffect(() => {
-        obtenerPedios()
-            .then((response) => setPedidos(response.data.Pedido))
+       
+       let pedidos = new PedidoServicio();
+          pedidos.allPedidos()
+            .then((response) => {
+                if(response.pedidos.length > 0){
+
+                    setPedidos(response.pedidos)
+                }
+            })
             .catch((error) => console.log("ERROR", error))
     }, [])
 
     useEffect(() => {
+        actualizarVenta();
+    }, [pedidos.length > 0])
+    const setDefaultValues = () => {
+        setFormValues({
+            fechaVenta: getCurrentDate(),
+            totalHamburguesa: '',
+            totalpizza: '',
+            totalempanada: '',
+            totalcono: '',
+            totallomito: '',
+            total: '',
+            totalpancho: ''
+        })
+    }
+    const actualizarVenta=()=>{
         let total: any = {};
         total = {
             empanada: 0,
@@ -81,13 +89,14 @@ export default function TotalVendido() {
         }
         if (pedidos.length > 0) {
             for (const p of pedidos) {
+                console.log("P ",p)
                 if (p.estado === "Entregado") {
                     total['empanada'] = total['empanada'] + p.empanada || 0;
                     total['hamburguesa'] = total['hamburguesa'] + p.hamburguesa || 0;
                     total['lomito'] = total['lomito'] + p.lomito || 0;
                     total['pizza'] = total['pizza'] + p.pizza || 0;
                     total['pancho'] = total['pancho'] + p.pancho || 0;
-                    total['cono'] = total['cono'] + p.pancho || 0;
+                    total['cono'] = total['cono'] + p.cono || 0;
                     total['preciohamburguesa'] = !(isNaN(p.preciohamburguesa)) && p.preciohamburguesa ? total['preciohamburguesa'] + parseFloat(p.preciohamburguesa) : total['preciohamburguesa'] + 0.0;
                     total['preciolomito'] = !(isNaN(p.preciolomito)) && p.preciolomito ? total['preciolomito'] + parseFloat(p.preciolomito) : total['preciolomito'] + 0.0;
                     total['preciopancho'] = !(isNaN(p.preciopancho)) && p.preciopancho ? total['preciopancho'] + parseFloat(p.preciopancho) : total['preciopancho'] + 0.0;
@@ -95,7 +104,6 @@ export default function TotalVendido() {
                     total['precioempanada'] = !(isNaN(p.precioempanada)) && p.precioempanada ? total['precioempanada'] + parseFloat(p.precioempanada) : total['precioempanada'] + 0.0;
                     total['total'] = !(isNaN(p.total)) && p.total ? total['total'] + parseFloat(p.total) : total['total'] + 0.0;
                 }
-
             }
             setFormValues({
                 total: total['total'] || '0',
@@ -108,23 +116,10 @@ export default function TotalVendido() {
                 totalpizza: total['pizza'] || '0'
             })
         }
-
-    }, [pedidos.length > 0])
-    const setDefaultValues = () => {
-        setFormValues({
-            fechaVenta: getCurrentDate(),
-            totalHamburguesa: '',
-            totalpizza: '',
-            totalempanada: '',
-            totalcono: '',
-            totallomito: '',
-            total: '',
-            totalpancho: ''
-        })
     }
     const generaPdf = async (formData: any) => {
         try {
-            console.log("")
+           actualizarVenta();
         } catch (error) {
             console.log("Error en el frontend ", error)
         }

@@ -126,7 +126,6 @@ export default function RegistrarPrecio() {
                     endpoind: 'save',
                     formData
                 })
-                console.log("producto ", producto)
                 if (producto.status === 200) {
                     setDialogoExito({
                         open: true,
@@ -137,7 +136,7 @@ export default function RegistrarPrecio() {
             }
 
         } catch (error) {
-            console.log("Error en el frontend ", error)
+            console.log("Error en el frontend registrar precio", error);
         }
     }
     return (

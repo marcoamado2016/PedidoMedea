@@ -64,13 +64,14 @@ export async function POST(request: NextRequest) {
     const newPedido: IPedidoSchema = new Pedido({
         numeroPedido, detalle, fechaPedido, estado, nombre, empanada, lomito, pizza, cono, hamburguesa, pancho,
         detalleempanada, detallepizza, detallelomo, detallecono, detallehamburguesa, detallepancho,
-        preciopizza, preciolomito, preciocono, preciohamburguesa, preciopancho, total,precioempanada
+        preciopizza, preciolomito, preciocono, preciohamburguesa, preciopancho, total, precioempanada
     })
     try {
         await newPedido.save();
         return NextResponse.json(
             {
-                message: 'Pedio creado exitosamente'
+                message: 'Pedio creado exitosamente',
+                pedido: newPedido
             },
             {
                 status: 200

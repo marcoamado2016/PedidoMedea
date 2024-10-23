@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import { PedidoServicio } from "../api/apiPedidos/pedidos.api"
 import { ProductoPrecioService } from "../api/apiPrecios/precios.api"
 import { StockService } from "../api/apiStock/stock.api"
+import { useStockProductoFetch } from "@/hooks/useStockFetch"
 
 interface OpenDialog {
     open: boolean;
@@ -39,7 +40,26 @@ export default function LoginPage(pedido?: any) {
     const [pizzam, setPizzam] = useState<string>("0");
     const [cono, setCono] = useState<string>("0")
     const [pancho, setPancho] = useState<string>("0");
-    const [contadorEmpanadas, setContadorEmpanadas] = useState<number>(0)
+    const [contadorEmpanadas, setContadorEmpanadas] = useState<number>(0);
+
+    //variables para controlar el stock
+    const [empanadaStock, setEmpanadaStock] = useState<string>("0");
+    const [hamburguesaStock, setHamburguesaStock] = useState<string>("0");
+    const [lomitoStock, setLomitoStock] = useState<string>("0");
+    const [pizzaStock, setPizzaStock] = useState<string>("0");
+    const [conoStock, setConoStock] = useState<string>("0")
+    const [panchoStock, setPanchoStock] = useState<string>("0");
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const stockProductoRouter = useStockProductoFetch();
+    const [formValuesStock, setFormValuesStock] = useState({
+        fechastock: getCurrentDate(),
+        stockhamburguesaActual: '0',
+        stockpanchoActual: '0',
+        stockpizzaActual: '0',
+        stockempanadaActual: '0',
+        stockconoActual: '0',
+        stocklomitoActual: '0'
+    })
     const [formValues, setFormValues] = useState({
         numeroPedido: '',
         fechaPedido: pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? pedido?.pedido?.fechaPedido : getCurrentDate(),
@@ -78,10 +98,25 @@ export default function LoginPage(pedido?: any) {
             })
             .catch((error) => console.log(error));
     }, []);
-    useEffect(()=>{
-      let stock = new StockService();
-          stock.obtenerStock()
-    },[])
+    useEffect(() => {
+        let stock = new StockService();
+        stock.obtenerStock()
+            .then((response) => {
+                if (response.stock[0]) {
+                    console.log("response.stock[0]  ", response.stock[0])
+                    setEmpanadaStock(response.stock[0].stockempanadaActual);
+                    setHamburguesaStock(response.stock[0].stockhamburguesaActual);
+                    setLomitoStock(response.stock[0].stocklomitoActual);
+                    setPizzaStock(response.stock[0].stockpizzaActual);
+                    setConoStock(response.stock[0].stockconoActual)
+                    setPanchoStock(response.stock[0].stockpanchoActual);
+
+                }
+            })
+            .catch((error) => {
+                console.log("ERROR ", error)
+            })
+    }, [])
     useEffect(() => {
         if (pedido?.pedido) {
             setFormValues({
@@ -112,6 +147,83 @@ export default function LoginPage(pedido?: any) {
         }
     }, [pedido])
     const [total, setTotal] = useState<number>(0);
+    useEffect(() => {
+        let ms: string[] = [];
+        if (Number(formValues.empanada) > Number(empanadaStock)) {
+            ms.push(`${empanadaStock} Empanadas`);
+            setDialogoStock({
+                open: true,
+                title: "Te quedan.",
+                message: ms.join("-"),
+            })
+            setShowModal(true);
+        } else {
+
+            ms = ms.filter((m) => m !== `${empanadaStock} Empanadas`);
+            setShowModal(false);
+        }
+        if (Number(formValues.hamburguesa) > Number(hamburguesaStock)) {
+
+            ms.push(`${hamburguesaStock} Hamburguesas`);
+            setDialogoStock({
+                open: true,
+                title: "Te quedan.",
+                message: ms.join("-"),
+            })
+            setShowModal(true);
+        } else {
+            ms = ms.filter((m) => m !== `${hamburguesaStock} Hamburguesas`);
+            setShowModal(false);
+        }
+        if (Number(formValues.lomito) > Number(lomitoStock)) {
+            ms.push(`${lomitoStock} Lomito`);
+            setDialogoStock({
+                open: true,
+                title: "Te quedan.",
+                message: ms.join("-"),
+            })
+            setShowModal(true);
+        } else {
+            ms = ms.filter((m) => m !== `${lomitoStock} Lomito`);
+            setShowModal(false);
+        }
+        if (Number(formValues.pizza) > Number(pizzaStock)) {
+            ms.push(`${pizzaStock} Pizzas`);
+            setDialogoStock({
+                open: true,
+                title: "Te quedan.",
+                message: ms.join("-"),
+            })
+            setShowModal(true);
+        } else {
+            ms = ms.filter((m) => m !== `${pizzaStock} Pizzas`);
+            setShowModal(false);
+        }
+        if (Number(formValues.cono) > Number(conoStock)) {
+            ms.push(`Conos ${conoStock}`);
+            setDialogoStock({
+                open: true,
+                title: "Te quedan.",
+                message: ms.join("-"),
+            })
+            setShowModal(true);
+        } else {
+            ms = ms.filter((m) => m !== `Conos ${conoStock}`);
+            setShowModal(false);
+        }
+        if (Number(formValues.pancho) > Number(panchoStock)) {
+            ms.push(`Panchos ${panchoStock}`);
+            setDialogoStock({
+                open: true,
+                title: "Te quedan.",
+                message: ms.join("-"),
+            })
+            setShowModal(true);
+        } else {
+            ms = ms.filter((m) => m !== `Panchos ${panchoStock}`);
+            setShowModal(false);
+        }
+    }, [empanadaStock, formValues, hamburguesaStock, lomitoStock, pizzaStock, conoStock, panchoStock])
     useEffect(() => {
         const calcularTotal = () => {
             let totalEmpanadas: number = 0;
@@ -152,6 +264,19 @@ export default function LoginPage(pedido?: any) {
                 formValues.precioempanada = String((unidades * parseFloat(empanadau)) + (media * parseFloat(empanadam)) + (contadorDocena * parseFloat(empanada)));
 
             }
+            if (empanadau !== "0" && Number(formValues.empanada) < 6) {
+                formValues.precioempanada = String(parseFloat(empanadau) * parseFloat(formValues.empanada));
+            }
+            if (empanadam !== "0" && formValues.empanada === "6") {
+                formValues.precioempanada = empanadam;
+            }
+            if (empanada !== "0" && formValues.empanada === "12") {
+                formValues.precioempanada = empanada;
+            }
+            if (Number(formValues.empanada) > 6 && Number(formValues.empanada) < 12) {
+                let mediaDocena = parseFloat(formValues.empanada) - 6;
+                formValues.precioempanada = String((mediaDocena * parseFloat(empanadau)) + parseFloat(empanadam));
+            }
             if (formValues.pizza === "0.5") {
                 if (pizzam !== "0") {
                     formValues.preciopizza = pizzam;
@@ -171,29 +296,9 @@ export default function LoginPage(pedido?: any) {
             if (lomito !== "0") {
                 formValues.preciolomito = String(parseFloat(lomito) * parseFloat(formValues.lomito));
             }
-            if (empanadau !== "0" && Number(formValues.empanada) < 6) {
-                console.log("empanadauempanadau ,", empanadau)
-                console.log("formValues.empanadaformValues.empanada 2", formValues.empanada)
-                formValues.precioempanada = String(parseFloat(empanadau) * parseFloat(formValues.empanada));
-                console.log("Entre 1")
-            }
-            if (empanadam !== "0" && formValues.empanada === "6") {
-                formValues.precioempanada = empanadam;
-                console.log("Entre 2")
-            }
-            if (empanada !== "0" && formValues.empanada === "12") {
-                formValues.precioempanada = empanada;
-                console.log(" Entre 3")
-            }
-            if (Number(formValues.empanada) > 6 && Number(formValues.empanada) < 12) {
-                let mediaDocena = parseFloat(formValues.empanada) - 6;
-                formValues.precioempanada = String((mediaDocena * parseFloat(empanadau)) + parseFloat(empanadam));
-            }
             if (pancho !== "0") {
                 formValues.preciopancho = String(parseFloat(pancho) * parseFloat(formValues.pancho));
             }
-            console.log("formValues.precioempanadaformValues.precioempanada ", formValues.precioempanada)
-            console.log("totalEmpanadastotalEmpanadastotalEmpanadas ", totalEmpanadas)
             const suma = (parseFloat(cono === "0" ? String(parseFloat(formValues.cono) * parseFloat(formValues.preciocono)) : formValues.preciocono) || 0) +
                 (parseFloat(formValues.precioempanada) || 0) +
                 (parseFloat(hamburguesa === "0" ? String(parseFloat(formValues.hamburguesa) * parseFloat(formValues.preciohamburguesa)) : formValues.preciohamburguesa) || 0) +
@@ -203,25 +308,32 @@ export default function LoginPage(pedido?: any) {
             setTotal(suma)
         }
         calcularTotal();
-    }, [formValues, formValues.empanada])
+    }, [formValues])
     useEffect(() => {
         setContadorEmpanadas(0);
     }, [formValues.empanada === ""])
     let preciosProducto = new ProductoPrecioService()
     preciosProducto.obtenerPrecios().then((response) => {
-        console.log("response.productoPrecio[0] ",response.productoPrecio[0])
-        response.productoPrecio[0].empanada !== "0" ? setEmpanada(response.productoPrecio[0].empanada) : setEmpanada("0");
-        response.productoPrecio[0].hamburguesa !== "0" ? setHamburguesa(response.productoPrecio[0].hamburguesa) : setHamburguesa("0");
-        response.productoPrecio[0].empanadam !== "0" ? setEmpanadam(response.productoPrecio[0].empanadam) : setEmpanadam("0");
-        response.productoPrecio[0].empanadau !== "0" ? setEmpanadau(response.productoPrecio[0].empanadau) : setEmpanadau("0");
-        response.productoPrecio[0].lomito !== "0" ? setLomito(response.productoPrecio[0].lomito) : setLomito("0");
-        response.productoPrecio[0].pizza !== "0" ? setPizza(response.productoPrecio[0].pizza) : setPizza("0");
-        response.productoPrecio[0].pizzam !== "0" ? setPizzam(response.productoPrecio[0].pizzam) : setPizzam("0");
-        response.productoPrecio[0].cono !== "0" ? setCono(response.productoPrecio[0].cono) : setCono("0");
-        response.productoPrecio[0].pancho !== "0" ? setPancho(response.productoPrecio[0].pancho) : setPancho("0");
+        if (response.productoPrecio[0]) {
+            response.productoPrecio[0].empanada !== "0" ? setEmpanada(response.productoPrecio[0].empanada) : setEmpanada("0");
+            response.productoPrecio[0].hamburguesa !== "0" ? setHamburguesa(response.productoPrecio[0].hamburguesa) : setHamburguesa("0");
+            response.productoPrecio[0].empanadam !== "0" ? setEmpanadam(response.productoPrecio[0].empanadam) : setEmpanadam("0");
+            response.productoPrecio[0].empanadau !== "0" ? setEmpanadau(response.productoPrecio[0].empanadau) : setEmpanadau("0");
+            response.productoPrecio[0].lomito !== "0" ? setLomito(response.productoPrecio[0].lomito) : setLomito("0");
+            response.productoPrecio[0].pizza !== "0" ? setPizza(response.productoPrecio[0].pizza) : setPizza("0");
+            response.productoPrecio[0].pizzam !== "0" ? setPizzam(response.productoPrecio[0].pizzam) : setPizzam("0");
+            response.productoPrecio[0].cono !== "0" ? setCono(response.productoPrecio[0].cono) : setCono("0");
+            response.productoPrecio[0].pancho !== "0" ? setPancho(response.productoPrecio[0].pancho) : setPancho("0");
+        }
+
 
     }).catch((error) => console.log("Error precio ", error))
     const [dialogoExito, setDialogoExito] = React.useState<OpenDialog>({
+        open: false,
+        title: '',
+        message: ''
+    })
+    const [dialogoStock, setDialogoStock] = React.useState<OpenDialog>({
         open: false,
         title: '',
         message: ''
@@ -241,6 +353,7 @@ export default function LoginPage(pedido?: any) {
                 [nombre]: valor
             }
         ))
+
     }
     const setDefaultValues = () => {
         setFormValues({
@@ -271,39 +384,86 @@ export default function LoginPage(pedido?: any) {
     }
     const registrarPedido = async (formData: any) => {
         try {
-            if (pedido?.pedido || pedido.nombre) {
-                startLoading()
-                const pedidoCambiado = await pedidoFetch({
-                    endpoint: 'change-pedido',
-                    formData: formData
+            if (showModal) {
+                setDialogoStock({
+                    open: true,
+                    title: "No se puede realizar la venta",
+                    message: "No tiene stock revise los productos ",
                 })
-                if (pedidoCambiado.status == 200) {
-                    setDialogoExito({
-                        open: true,
-                        title: "Pedido modificado ",
-                        message: 'Exito',
-                    })
-                }
-                finishLoading();
-                setDefaultValues();
             } else {
-                startLoading()
-                formData.estado = 'Preparar'
-                const respuesta = await pedidoFetch({
-                    endpoint: 'save',
-                    redirectRoute: '/registrarPedidos',
-                    formData
-                })
-                finishLoading();
-                setDefaultValues();
-                if (respuesta.status == 200) {
-                    setDialogoExito({
-                        open: true,
-                        title: "Registro de pedido",
-                        message: 'Exito',
+                if (pedido?.pedido || pedido.nombre) {
+                    startLoading()
+                    const pedidoCambiado = await pedidoFetch({
+                        endpoint: 'change-pedido',
+                        formData: formData
                     })
+                    if (pedidoCambiado.status == 200) {
+                        setDialogoStock({
+                            open: true,
+                            title: "Pedido modificado ",
+                            message: 'Exito',
+                        })
+                    }
+                    finishLoading();
+                    setDefaultValues();
+                } else {
+                    startLoading()
+                    formData.estado = 'Preparar'
+                    const respuesta = await pedidoFetch({
+                        endpoint: 'save',
+                        redirectRoute: '/registrarPedidos',
+                        formData
+                    })
+                    finishLoading();
+                    setDefaultValues();
+                    if (respuesta.status == 200) {
+                        console.log("(respuesta.status == 200 ", respuesta.data.pedido)
+                        if (respuesta.data.pedido) {
+                            console.log("empanadaStock ", String(Number(empanadaStock) - Number(respuesta.data.pedido.empanada)))
+                            console.log("conoStock", String(Number(conoStock) - Number(respuesta.data.pedido.cono)))
+                            console.log("hamburguesaStock ", String(Number(hamburguesaStock) - Number(respuesta.data.pedido.hamburguesa)))
+                            console.log("lomitoStock ", String(Number(lomitoStock) - Number(respuesta.data.pedido.lomito)))
+                            console.log("panchoStock", String(Number(panchoStock) - Number(respuesta.data.pedido.pancho)))
+                            console.log("pizzaStock ", String(Number(pizzaStock) - Number(respuesta.data.pedido.pizza)))
+                            formValuesStock.stockempanadaActual = empanadaStock;
+                            formValuesStock.stockconoActual = conoStock;
+                            formValuesStock.stockhamburguesaActual = hamburguesaStock;
+                            formValuesStock.stocklomitoActual = lomitoStock;
+                            formValuesStock.stockpanchoActual = panchoStock
+                            formValuesStock.stockpizzaActual = pizzaStock;
+                            if (Number(respuesta.data.pedido.empanada) > 0) {
+                                formValuesStock.stockempanadaActual = String(Number(empanadaStock) - Number(respuesta.data.pedido.empanada));
+                            }
+                            if (Number(respuesta.data.pedido.cono) > 0) {
+                                formValuesStock.stockconoActual = String(Number(conoStock) - Number(respuesta.data.pedido.cono));
+                            }
+                            if (Number(respuesta.data.pedido.hamburguesa) > 0) {
+                                formValuesStock.stockhamburguesaActual = String(Number(hamburguesaStock) - Number(respuesta.data.pedido.hamburguesa));
+                            }
+                            if (Number(respuesta.data.pedido.lomito) > 0) {
+                                formValuesStock.stocklomitoActual = String(Number(lomitoStock) - Number(respuesta.data.pedido.lomito));
+                            }
+                            if (Number(respuesta.data.pedido.pancho) > 0) {
+                                formValuesStock.stockpanchoActual = String(Number(panchoStock) - Number(respuesta.data.pedido.pancho));
+                            }
+                            if (Number(respuesta.data.pedido.pizza) > 0) {
+                                formValuesStock.stockpizzaActual = String(Number(pizzaStock) - Number(respuesta.data.pedido.pizza));
+                            }
+                            console.log(" formValuesStock ", formValuesStock)
+                            const modificarStock = await stockProductoRouter({
+                                endpoind: 'change-stock',
+                                formData: formValuesStock
+                            })
+                        }
+                        setDialogoExito({
+                            open: true,
+                            title: "Registro de pedido",
+                            message: 'Exito',
+                        })
+                    }
                 }
             }
+
         } catch (error: any) {
             console.error("Error al registrar el pedido ", error)
             if (error?.response?.status === 409) {
@@ -561,7 +721,7 @@ export default function LoginPage(pedido?: any) {
                                 name='pancho'
                                 placeholder="pancho"
                                 type="number"
-                                defaultValue={formValues.pancho}
+                                defaultValue={isNaN(Number(formValues.pancho)) ? "" : formValues.pancho}
                                 disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                                 onChange={(e) => handleChangeInput1("pancho", e.target.value)}
                             />
@@ -582,7 +742,7 @@ export default function LoginPage(pedido?: any) {
                                 name='preciopancho'
                                 placeholder="precio pancho"
                                 type="text"
-                                defaultValue={formValues.preciopancho}
+                                defaultValue={isNaN(Number(formValues.preciopancho)) ? "" : formValues.preciopancho}
                                 onChange={(e) => handleChangeInput("preciopancho", e.target.value)}
                                 disable={pedido?.pedido?.numeroPedido || pedido?.pedido?.nombre ? true : false}
                             />
@@ -646,6 +806,28 @@ export default function LoginPage(pedido?: any) {
                                 message: '',
                             })
                             window.location.reload();
+                        },
+                    },
+                ]}
+            />
+            <MiDialog2
+                open={dialogoStock.open}
+                title={
+                    dialogoStock.title
+                }
+                message={dialogoStock.message}
+                actions={[
+                    {
+                        text: "Aceptar",
+                        color: "primary",
+                        variant: "contained",
+                        onClick: () => {
+                            setDialogoStock({
+                                open: false,
+                                title: "",
+                                message: '',
+                            })
+                            setShowModal(true);
                         },
                     },
                 ]}

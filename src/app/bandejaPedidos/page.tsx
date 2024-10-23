@@ -18,31 +18,40 @@ export default function BandejaPedidos() {
     const [filasPaginado, setfilasPaginado] = useState<number>(15);
     const [numeroPaginado, setNumeroPaginado] = useState<number>(1);
     const [paginaSeleccionada, setPaginaSeleccionada] = useState(1);
-    const [cantidadTotalRegistros, setCantidadTotalRegistros] = useState<number>(0);
+    const [nombreCliente, setNombreCliente] = useState<string>("");
     useEffect(() => {
-        obtenerPedidos(value, estado)
-    }, [value, estado, paginaSeleccionada, filasPaginado])
+        obtenerPedidos(value, estado, nombreCliente)
+    }, [value, paginaSeleccionada, filasPaginado])
 
-    const obtenerPedidos = async (value: number, estado: string) => {
+    const obtenerPedidos = async (value: number, estado: string, nombreCliente: string) => {
         setCargandoDatos(true);
         let queryParams: any = {}
         queryParams = {
             filasPaginado: filasPaginado,
             numeroPagina: paginaSeleccionada
         }
-        if (estado.length === 0) {
+        if (nombreCliente?.length !== 0) {
             queryParams = {
-                numeroPedido: value,
-                ...queryParams
+                ...queryParams,
+                nombreCliente: nombreCliente
+            }
+
+        } else {
+            if (estado.length === 0) {
+                queryParams = {
+                    numeroPedido: value,
+                    ...queryParams
+                }
+            }
+            if (estado.length !== 0) {
+                queryParams = {
+                    numeroPedido: value,
+                    estado: estado,
+                    ...queryParams
+                }
             }
         }
-        if (estado.length !== 0) {
-            queryParams = {
-                numeroPedido: value,
-                estado: estado,
-                ...queryParams
-            }
-        }
+    console.log("queryParams ",queryParams)
         try {
             const respuesta = await pedidoFetch({
                 endpoint: 'search',
@@ -70,8 +79,10 @@ export default function BandejaPedidos() {
                     value={value}
                     estado={estado}
                     setEstado={setEstado}
+                    nombreCliente={nombreCliente}
+                    setNombreCliente={setNombreCliente}
                 />
-                <ContenedorTabla datosTabla={datosTabla} setCargandoDatos={setCargandoDatos} cargandoDatos={cargandoDatos} value={value} setValue={setValue} filasPaginado={filasPaginado} setfilasPaginado={setfilasPaginado} numeroPaginado={numeroPaginado} setNumeroPaginado={setNumeroPaginado} paginaSeleccionada={paginaSeleccionada} setPaginaSeleccionada={setPaginaSeleccionada} />
+                <ContenedorTabla datosTabla={datosTabla} setCargandoDatos={setCargandoDatos} cargandoDatos={cargandoDatos} value={value} setValue={setValue} filasPaginado={filasPaginado} setfilasPaginado={setfilasPaginado} numeroPaginado={numeroPaginado} setNumeroPaginado={setNumeroPaginado} paginaSeleccionada={paginaSeleccionada} setPaginaSeleccionada={setPaginaSeleccionada} estado={estado} setEstado={setEstado} nombreCliente={nombreCliente} setNombreCliente={setNombreCliente} />
                 <Grid
                     container
                     justifyContent="flex-end"

@@ -33,7 +33,10 @@ export async function GET(request: NextRequest) {
             )
         }
     } catch (error) {
-
+        return NextResponse.json(
+            { message: messages.error.NoAutorizado },
+            { status: 403 }
+        )
     }
 
 

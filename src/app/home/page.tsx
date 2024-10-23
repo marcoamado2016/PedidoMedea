@@ -18,7 +18,7 @@ export default async function HomePage() {
                         minHeight: 200,
                         maxHeight: 200,
                         boxShadow: "5px 5px 30px -5px rgba(0,0,0,0.75)",
-                        backgroundColor: "#fafafa",
+                        backgroundColor: '#419df3',
                     }}
                     onClick={() => window.open('/bandejaPedidos', '_blank')}
                 >
@@ -32,7 +32,7 @@ export default async function HomePage() {
                         minHeight: 200,
                         maxHeight: 200,
                         boxShadow: "5px 5px 30px -5px rgba(0,0,0,0.75)",
-                        backgroundColor: "#fafafa",
+                        backgroundColor: '#419df3',
                     }}
                     onClick={() => window.open('/registrarPedidos', '_blank')}
                 >
@@ -46,7 +46,7 @@ export default async function HomePage() {
                         minHeight: 200,
                         maxHeight: 200,
                         boxShadow: "5px 5px 30px -5px rgba(0,0,0,0.75)",
-                        backgroundColor: "#fafafa",
+                        backgroundColor: '#419df3',
                     }}
                     onClick={() => window.open('/pedidoAPreparar', '_blank')}
                 >
@@ -60,11 +60,53 @@ export default async function HomePage() {
                         minHeight: 200,
                         maxHeight: 200,
                         boxShadow: "5px 5px 30px -5px rgba(0,0,0,0.75)",
-                        backgroundColor: "#fafafa",
+                        backgroundColor: '#419df3',
                     }}
                     onClick={() => window.open('/AlertaPedidos', '_blank')}
                 >
                     Alerta pedidos
+                </button>
+                <button
+                    style={{
+                        borderRadius: 20,
+                        margin: 16,
+                        width: 160,
+                        minHeight: 200,
+                        maxHeight: 200,
+                        boxShadow: "5px 5px 30px -5px rgba(0,0,0,0.75)",
+                        backgroundColor: '#419df3',
+                    }}
+                    onClick={() => window.open('/calcularTotal', '_blank')}
+                >
+                    Total ventas
+                </button>
+                <button
+                    style={{
+                        borderRadius: 20,
+                        margin: 16,
+                        width: 160,
+                        minHeight: 200,
+                        maxHeight: 200,
+                        boxShadow: "5px 5px 30px -5px rgba(0,0,0,0.75)",
+                        backgroundColor: '#419df3',
+                    }}
+                    onClick={() => window.open('/registrarPrecio', '_blank')}
+                >
+                    Registrar precios
+                </button>
+                <button
+                    style={{
+                        borderRadius: 20,
+                        margin: 16,
+                        width: 160,
+                        minHeight: 200,
+                        maxHeight: 200,
+                        boxShadow: "5px 5px 30px -5px rgba(0,0,0,0.75)",
+                        backgroundColor: '#419df3',
+                    }}
+                    onClick={() => window.open('/stock', '_blank')}
+                >
+                    Registrar Stock
                 </button>
             </div>
         </>

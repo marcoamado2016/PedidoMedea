@@ -10,9 +10,12 @@ interface InputProps {
     label: string
     placeholder?: string
     defaultValue?: string
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    disable?: boolean;
+    color?: string;
 }
 
-export function Input({ label, name, placeholder, type, defaultValue }: InputProps) {
+export function Input({ label, name, placeholder, type, defaultValue, onChange, disable = false, color = 'white' }: InputProps) {
 
     const { formValues, setFormValues } = useContext(FormContext)!
 
@@ -33,6 +36,9 @@ export function Input({ label, name, placeholder, type, defaultValue }: InputPro
             ...prevValues,
             [name]: value
         }))
+        if (onChange) {
+            onChange(event);
+        }
 
     }
 
@@ -48,6 +54,8 @@ export function Input({ label, name, placeholder, type, defaultValue }: InputPro
                 value={formValues[name] || ''}
                 onChange={handleChange}
                 placeholder={placeholder}
+                disabled={disable}
+                style={{ backgroundColor: color }}
             />
         </div>
     )

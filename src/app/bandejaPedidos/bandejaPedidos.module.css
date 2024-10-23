@@ -17,9 +17,9 @@
   display: flex;
   vertical-align: middle;
   font-size: 24px;
-  color: white;
+  color: rgb(12, 11, 11);
   height: 25px;
-  background-color: #5cacf7;
+  background-color: #7bbdfa;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }

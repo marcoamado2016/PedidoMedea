@@ -20,27 +20,25 @@ export default function PedidoAPreparar() {
             obtenerPedidos().then((o) => setEntregar(true)).catch((c) => console.log("33", c));
         }, 8000);
         return () => clearInterval(obtenerPedidosInterval);
-    }, [value === 0,entregar===false]);
-
-    useEffect(() => {
-        const obtenerPedidosInterval = setInterval(() => {
-            obtenerPedidos()
-            .then((data: any[]) => {
-                if (data.length > 0) {
-                    let pedidoSeleccioando = data[data.length - 1];
-                    cambiarEstadoPedido(pedidoSeleccioando = data[data.length - 1].numeroPedido, "Entregado", pedidoSeleccioando = data[data.length - 1].nombre)
-                    setEntregar(false);
-                }
-
-            })
-            .catch((error) => {
-                throw new Error(`${error}`);
-            })
-
-        }, 60000);
-        return () => clearInterval(obtenerPedidosInterval);
-
-    }, [entregar === true])
+    }, []);
+    
+        useEffect(() => {
+            const obtenerPedidosInterval = setInterval(() => {
+                obtenerPedidos()
+                    .then((data: any[]) => {
+                        if (data.length > 0) {
+                            cambiarEstadoPedido(data[data.length - 1].numeroPedido, "Entregado", data[data.length - 1].nombre)
+                            setEntregar(false);
+                        }
+                    })
+                    .catch((error) => {
+                        throw new Error(`${error}`);
+                    })
+    
+            }, 60000);
+            return () => clearInterval(obtenerPedidosInterval);
+        }, [])
+        
     const obtenerPedidos = async () => {
         let queryParams: any = {
             numeroPedido: 0,

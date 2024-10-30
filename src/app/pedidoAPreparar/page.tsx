@@ -16,10 +16,10 @@ export default function PedidoAPreparar() {
 
     useEffect(() => {
         const obtenerPedidosInterval = setInterval(() => {
-            obtenerPedidos().then((o) => console.log(o)).catch((c) => console.log("33", c));
-        }, 8000);
+            obtenerPedidos().then((o) => console.log("OOO",o)).catch((c) => console.log("33", c));
+        }, 2000);
         return () => clearInterval(obtenerPedidosInterval);
-    }, [value === 0]);
+    }, []);
 
     const obtenerPedidos = async () => {
         let queryParams: any = {

@@ -61,18 +61,10 @@ export default function ContenedorTabla(props: {
                 <b>JOVENES M.E.D.E.A</b>
             </Typography>
             <Tablas key={0} value={value} index={0}>
-                {cargandoDatos ? (
-                    <div style={{ textAlign: "center", paddingTop: "5%" }}>
-                        <Loader />
-                    </div>
-                ) : (
-                    datosTabla.length > 0 && !cargandoDatos ? (
-                        <TablaPedidos
-                            datosTabla={datosTabla}
-                            value={value}
-                        />
-                    ) : null
-                )}
+                <TablaPedidos
+                    datosTabla={datosTabla}
+                    value={value}
+                />
             </Tablas>
         </Box>
 

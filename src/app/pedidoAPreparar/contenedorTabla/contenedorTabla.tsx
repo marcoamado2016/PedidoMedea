@@ -33,6 +33,7 @@ export default function ContenedorTabla(props: {
     setValue: Dispatch<SetStateAction<number>>;
 
 }) {
+
     const { cargandoDatos, datosTabla, setCargandoDatos, setValue, value } = props;
     useEffect(() => {
         if (props.cargandoDatos) {
@@ -41,7 +42,6 @@ export default function ContenedorTabla(props: {
             }, 1000);
             return () => clearTimeout(timer);
         }
-
     }, [datosTabla, cargandoDatos])
     return (
         <Box sx={{ width: "100%", height: "calc(100% - 3em)" }}>
@@ -58,18 +58,10 @@ export default function ContenedorTabla(props: {
                 <b>Estados de pedidos</b>
             </Typography>
             <Tablas key={0} value={value} index={0}>
-                {cargandoDatos ? (
-                    <div style={{ textAlign: "center", paddingTop: "5%" }}>
-                        <Loader />
-                    </div>
-                ) : (
-                    datosTabla.length > 0 && !cargandoDatos ? (
-                        <TablaPedidos
-                            datosTabla={datosTabla}
-                            value={value}
-                        />
-                    ) : null
-                )}
+                <TablaPedidos
+                    datosTabla={datosTabla}
+                    value={value}
+                />
             </Tablas>
 
         </Box>

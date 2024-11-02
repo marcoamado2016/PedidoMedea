@@ -23,20 +23,20 @@ interface OpenDialog {
 export default function RegistrarStock() {
     let router = useRouter();
     const stockProductoRouter = useStockProductoFetch();
-    const [hamburguesa, setHamburguesa] = useState<string>("");
-    const [lomito, setLomito] = useState<string>("");
-    const [pizza, setPizza] = useState<string>("");
-    const [cono, setCono] = useState<string>("")
-    const [pancho, setPancho] = useState<string>("");
-    const [empanada, setEmpanada] = useState<string>("");
+    const [hamburguesa, setHamburguesa] = useState<string>("0");
+    const [lomito, setLomito] = useState<string>("0");
+    const [pizza, setPizza] = useState<string>("0");
+    const [cono, setCono] = useState<string>("0")
+    const [pancho, setPancho] = useState<string>("0");
+    const [empanada, setEmpanada] = useState<string>("0");
 
-    const [hamburguesaActual, setHamburguesaActual] = useState<string>("");
-    const [lomitoActual, setLomitoActual] = useState<string>("");
-    const [pizzaActual, setPizzaActual] = useState<string>("");
-    const [conoActual, setConoActual] = useState<string>("")
-    const [panchoActual, setPanchoActual] = useState<string>("");
-    const [empanadaActual, setEmpanadaActual] = useState<string>("");
-
+    const [hamburguesaActual, setHamburguesaActual] = useState<string>("0");
+    const [lomitoActual, setLomitoActual] = useState<string>("0");
+    const [pizzaActual, setPizzaActual] = useState<string>("0");
+    const [conoActual, setConoActual] = useState<string>("0")
+    const [panchoActual, setPanchoActual] = useState<string>("0");
+    const [empanadaActual, setEmpanadaActual] = useState<string>("0");
+    const [evento, setEvento] = useState<boolean>(false);
     const [fecha, setFecha] = useState<string>("")
     const [dialogoExito, setDialogoExito] = React.useState<OpenDialog>({
         open: false,
@@ -59,12 +59,33 @@ export default function RegistrarStock() {
         stocklomitoActual: '0'
     })
     useEffect(() => {
-        actualizarDatos();
+        actualizarDatos().then((response) => console.log("OK", response)).catch((err) => console.log("ERROR", err));
     }, [])
+    const actualizarDatos = async () => {
+        let servicioStock = new StockService()
+        servicioStock.obtenerStock()
+            .then((response) => {
+                if (response.stock[0]) {
+                    response.stock[0].stockhamburguesa !== "0" ? setHamburguesa(response.stock[0].stockhamburguesa) : setHamburguesa("0");
+                    response.stock[0].stockpancho !== "0" ? setPancho(response.stock[0].stockpancho) : setPancho("0");
+                    response.stock[0].stockpizza !== "0" ? setPizza(response.stock[0].stockpizza) : setPizza("0");
+                    response.stock[0].stockempanada !== "0" ? setEmpanada(response.stock[0].stockempanada) : setEmpanada("0");
+                    response.stock[0].stockcono !== "0" ? setCono(response.stock[0].stockcono) : setCono("0");
+                    response.stock[0].stocklomito !== "0" ? setLomito(response.stock[0].stocklomito) : setLomito("0");
+                    response.stock[0].stockconoActual !== "0" ? setConoActual(response.stock[0].stockconoActual) : setConoActual("0");
+                    response.stock[0].stockempanadaActual !== "0" ? setEmpanadaActual(response.stock[0].stockempanadaActual) : setEmpanadaActual("0");
+                    response.stock[0].stockhamburguesaActual !== "0" ? setHamburguesaActual(response.stock[0].stockhamburguesaActual) : setHamburguesaActual("0");
+                    response.stock[0].stocklomitoActual !== "0" ? setLomitoActual(response.stock[0].stocklomitoActual) : setLomitoActual("0");
+                    response.stock[0].stockpanchoActual !== "0" ? setPanchoActual(response.stock[0].stockpanchoActual) : setPanchoActual("0");
+                    response.stock[0].stockpizzaActual !== "0" ? setPizzaActual(response.stock[0].stockpizzaActual) : setPizzaActual("0");
+                    response.stock[0].fechastock !== "" ? setFecha(response.stock[0].fechastock) : setFecha("")
+                }
+            })
+            .catch((error) => { console.log("ERROR STOCK ", error) })
+    }
     const registrarStock = async (formData: any) => {
-
         try {
-            if (fecha !== "") {
+            if (!evento) {
                 formData.stockhamburguesa = formData.stockhamburguesa ? formData.stockhamburguesa : hamburguesa;
                 formData.stockpancho = formData.stockpancho ? formData.stockpancho : pancho;
                 formData.stockpizza = formData.stockpizza ? formData.stockpizza : pizza
@@ -93,21 +114,33 @@ export default function RegistrarStock() {
                         message: 'Exito',
                     })
                 }
-            } else {
-                formData.stockhamburguesaActual = formData.stockhamburguesa;
-                formData.stockpanchoActual = formData.stockpancho;
-                formData.stockpizzaActual = formData.stockpizza;
-                formData.stockempanadaActual = formData.stockempanada;
-                formData.stockconoActual = formData.stockcono;
-                formData.stocklomitoActual = formData.stocklomito;
+            }
+            if (evento) {
+                formData.stockhamburguesaActual = String(parseFloat(formData.stockhamburguesa || 0) + parseFloat(hamburguesa));
+                formData.stockpanchoActual = String(parseFloat(formData.stockpancho || 0) + parseFloat(pancho));
+                formData.stockpizzaActual = String(parseFloat(formData.stockpizza || 0) + parseFloat(pizzaActual));
+                formData.stockempanadaActual = String(parseFloat(formData.stockempanada || 0) + parseFloat(empanada));
+                formData.stockconoActual = String(parseFloat(formData.stockcono || 0) + parseFloat(cono));
+                formData.stocklomitoActual = String(parseFloat(formData.stocklomito || 0) + parseFloat(lomito));
+                formData.stockhamburguesa = String(parseFloat(formData.stockhamburguesa || 0) + parseFloat(hamburguesa));
+                formData.stockpancho = String(parseFloat(formData.stockpancho || 0) + parseFloat(pancho));
+                formData.stockpizza = String(parseFloat(formData.stockpizza || 0) + parseFloat(pizza));
+                formData.stockempanada = String(parseFloat(formData.stockempanada || 0) + parseFloat(empanada));
+                formData.stockcono = String(parseFloat(formData.stockcono || 0) + parseFloat(cono));
+                formData.stocklomito = String(parseFloat(formData.stocklomito || 0) + parseFloat(lomito));
                 const guardarStock = await stockProductoRouter({
-                    endpoind: 'save',
+                    endpoind: 'change-stock',
                     formData
                 })
                 if (guardarStock.status === 200) {
+                    setHamburguesa(formData.stockhamburguesa);
+                    setPancho(formData.stockpancho);
+                    setPizza(formData.stockpizza);
+                    setCono(formData.stockcono);
+                    setEmpanada(formData.stockempanada);
                     setDialogoExito({
                         open: true,
-                        title: "Stock Guardado ",
+                        title: "Stock Agregado ",
                         message: 'Exito',
                     })
                 }
@@ -117,30 +150,7 @@ export default function RegistrarStock() {
             console.log("Error en el frontend registrar stock", error);
         }
     }
-    const actualizarDatos = async () => {
-        console.log("HOLA 12345 ")
-        let servicioStock = new StockService()
-        servicioStock.obtenerStock()
-            .then((response) => {
-                if (response.stock[0]) {
-                    console.log("response.stock[0] ", response.stock[0])
-                    response.stock[0].stockhamburguesa !== "0" ? setHamburguesa(response.stock[0].stockhamburguesa) : setHamburguesa("0");
-                    response.stock[0].stockpancho !== "0" ? setPancho(response.stock[0].stockpancho) : setPancho("0");
-                    response.stock[0].stockpizza !== "0" ? setPizza(response.stock[0].stockpizza) : setPizza("0");
-                    response.stock[0].stockempanada !== "0" ? setEmpanada(response.stock[0].stockempanada) : setEmpanada("0");
-                    response.stock[0].stockcono !== "0" ? setCono(response.stock[0].stockcono) : setCono("0");
-                    response.stock[0].stocklomito !== "0" ? setLomito(response.stock[0].stocklomito) : setLomito("0");
-                    response.stock[0].stockconoActual !== "0" ? setConoActual(response.stock[0].stockconoActual) : setConoActual("0");
-                    response.stock[0].stockempanadaActual !== "0" ? setEmpanadaActual(response.stock[0].stockempanadaActual) : setEmpanadaActual("0");
-                    response.stock[0].stockhamburguesaActual !== "0" ? setHamburguesaActual(response.stock[0].stockhamburguesaActual) : setHamburguesaActual("0");
-                    response.stock[0].stocklomitoActual !== "0" ? setLomitoActual(response.stock[0].stocklomitoActual) : setLomitoActual("0");
-                    response.stock[0].stockpanchoActual !== "0" ? setPanchoActual(response.stock[0].stockpanchoActual) : setPanchoActual("0");
-                    response.stock[0].stockpizzaActual !== "0" ? setPizzaActual(response.stock[0].stockpizzaActual) : setPizzaActual("0");
-                    response.stock[0].fechastock !== "" ? setFecha(response.stock[0].fechastock) : setFecha("")
-                }
-            })
-            .catch((error) => { console.log("ERROR STOCK ", error) })
-    }
+
     return (
         <>
             <Grid container style={{ backgroundColor: '#419df3' }}>
@@ -242,6 +252,13 @@ export default function RegistrarStock() {
                         <Grid item xs={6} container justifyContent="flex-end">
                             <Form.SubmitButton
                                 buttonText="Modificar Stock"
+                                onClick={() => setEvento(false)}
+                            />
+                        </Grid>
+                        <Grid item xs={6} container justifyContent="flex-end">
+                            <Form.SubmitButton
+                                buttonText="Agregar Stock"
+                                onClick={() => setEvento(true)}
                             />
                         </Grid>
                     </Grid>
@@ -290,7 +307,7 @@ export default function RegistrarStock() {
                         <Grid item xs={12} sm={4} >
                             <Form.Input
                                 label="hamburguesa Disponible"
-                                name="stockhamburguesa"
+                                name="stockhamburguesaActual"
                                 type="number"
                                 placeholder="hamburguesa"
                                 disable={true}
@@ -300,7 +317,7 @@ export default function RegistrarStock() {
                         <Grid item xs={12} sm={4} >
                             <Form.Input
                                 label="Pancho Disponible"
-                                name="stockpancho"
+                                name="stockpanchoActual"
                                 type="number"
                                 placeholder="pancho"
                                 disable={true}
@@ -310,7 +327,7 @@ export default function RegistrarStock() {
                         <Grid item xs={12} sm={4} >
                             <Form.Input
                                 label="Pizza Disponible"
-                                name="stockpizza"
+                                name="stockpizzaActual"
                                 type="number"
                                 placeholder="pizza"
                                 disable={true}
@@ -320,7 +337,7 @@ export default function RegistrarStock() {
                         <Grid item xs={12} sm={4} >
                             <Form.Input
                                 label="Empanada Disponible"
-                                name="stockempanada"
+                                name="stockempanadaActual"
                                 type="number"
                                 placeholder="empanada"
                                 disable={true}
@@ -330,7 +347,7 @@ export default function RegistrarStock() {
                         <Grid item xs={12} sm={4} >
                             <Form.Input
                                 label="Cono Disponible"
-                                name="stockcono"
+                                name="stockconoActual"
                                 type="number"
                                 placeholder="cono"
                                 disable={true}
@@ -340,7 +357,7 @@ export default function RegistrarStock() {
                         <Grid item xs={12} sm={4} >
                             <Form.Input
                                 label="Lomito Disponible"
-                                name="stocklomito"
+                                name="stocklomitoActual"
                                 type="number"
                                 placeholder="lomito"
                                 disable={true}
@@ -371,6 +388,7 @@ export default function RegistrarStock() {
                                 buttonText="Actualizar datos Stock"
                             />
                         </Grid>
+
                     </Grid>
                 </Form>
 

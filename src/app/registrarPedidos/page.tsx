@@ -12,8 +12,7 @@ import { useRouter } from "next/navigation"
 import { PedidoServicio } from "../api/apiPedidos/pedidos.api"
 import { ProductoPrecioService } from "../api/apiPrecios/precios.api"
 import { StockService } from "../api/apiStock/stock.api"
-import { useStockProductoFetch } from "@/hooks/useStockFetch"
-
+import { useStockProductoFetch } from "@/hooks/useStockFetch";
 interface OpenDialog {
     open: boolean;
     title: string;
@@ -41,8 +40,6 @@ export default function LoginPage(pedido?: any) {
     const [cono, setCono] = useState<string>("0")
     const [pancho, setPancho] = useState<string>("0");
     const [contadorEmpanadas, setContadorEmpanadas] = useState<number>(0);
-
-    //variables para controlar el stock
     const [empanadaStock, setEmpanadaStock] = useState<string>("0");
     const [hamburguesaStock, setHamburguesaStock] = useState<string>("0");
     const [lomitoStock, setLomitoStock] = useState<string>("0");
@@ -99,23 +96,24 @@ export default function LoginPage(pedido?: any) {
             .catch((error) => console.log(error));
     }, []);
     useEffect(() => {
-        let stock = new StockService();
-        stock.obtenerStock()
-            .then((response) => {
-                if (response.stock[0]) {
-                    console.log("response.stock[0]  ", response.stock[0])
-                    setEmpanadaStock(response.stock[0].stockempanadaActual);
-                    setHamburguesaStock(response.stock[0].stockhamburguesaActual);
-                    setLomitoStock(response.stock[0].stocklomitoActual);
-                    setPizzaStock(response.stock[0].stockpizzaActual);
-                    setConoStock(response.stock[0].stockconoActual)
-                    setPanchoStock(response.stock[0].stockpanchoActual);
-
-                }
-            })
-            .catch((error) => {
-                console.log("ERROR ", error)
-            })
+        const stockS = setInterval(() => {
+            let stock = new StockService();
+            stock.obtenerStock()
+                .then((response) => {
+                    if (response.stock[0]) {
+                        setEmpanadaStock(response.stock[0].stockempanadaActual);
+                        setHamburguesaStock(response.stock[0].stockhamburguesaActual);
+                        setLomitoStock(response.stock[0].stocklomitoActual);
+                        setPizzaStock(response.stock[0].stockpizzaActual);
+                        setConoStock(response.stock[0].stockconoActual)
+                        setPanchoStock(response.stock[0].stockpanchoActual);
+                    }
+                })
+                .catch((error) => {
+                    console.log("ERROR ", error)
+                })
+        }, 500)
+        return () => clearInterval(stockS)
     }, [])
     useEffect(() => {
         if (pedido?.pedido) {
@@ -158,12 +156,10 @@ export default function LoginPage(pedido?: any) {
             })
             setShowModal(true);
         } else {
-
             ms = ms.filter((m) => m !== `${empanadaStock} Empanadas`);
             setShowModal(false);
         }
         if (Number(formValues.hamburguesa) > Number(hamburguesaStock)) {
-
             ms.push(`${hamburguesaStock} Hamburguesas`);
             setDialogoStock({
                 open: true,
@@ -223,7 +219,7 @@ export default function LoginPage(pedido?: any) {
             ms = ms.filter((m) => m !== `Panchos ${panchoStock}`);
             setShowModal(false);
         }
-    }, [empanadaStock, formValues, hamburguesaStock, lomitoStock, pizzaStock, conoStock, panchoStock])
+    }, [empanadaStock, formValues.empanada, hamburguesaStock, formValues.hamburguesa, lomitoStock, formValues.lomito, pizzaStock, formValues.pizza, conoStock, formValues.cono, panchoStock, formValues.pancho])
     useEffect(() => {
         const calcularTotal = () => {
             let totalEmpanadas: number = 0;
@@ -312,22 +308,27 @@ export default function LoginPage(pedido?: any) {
     useEffect(() => {
         setContadorEmpanadas(0);
     }, [formValues.empanada === ""])
-    let preciosProducto = new ProductoPrecioService()
-    preciosProducto.obtenerPrecios().then((response) => {
-        if (response.productoPrecio[0]) {
-            response.productoPrecio[0].empanada !== "0" ? setEmpanada(response.productoPrecio[0].empanada) : setEmpanada("0");
-            response.productoPrecio[0].hamburguesa !== "0" ? setHamburguesa(response.productoPrecio[0].hamburguesa) : setHamburguesa("0");
-            response.productoPrecio[0].empanadam !== "0" ? setEmpanadam(response.productoPrecio[0].empanadam) : setEmpanadam("0");
-            response.productoPrecio[0].empanadau !== "0" ? setEmpanadau(response.productoPrecio[0].empanadau) : setEmpanadau("0");
-            response.productoPrecio[0].lomito !== "0" ? setLomito(response.productoPrecio[0].lomito) : setLomito("0");
-            response.productoPrecio[0].pizza !== "0" ? setPizza(response.productoPrecio[0].pizza) : setPizza("0");
-            response.productoPrecio[0].pizzam !== "0" ? setPizzam(response.productoPrecio[0].pizzam) : setPizzam("0");
-            response.productoPrecio[0].cono !== "0" ? setCono(response.productoPrecio[0].cono) : setCono("0");
-            response.productoPrecio[0].pancho !== "0" ? setPancho(response.productoPrecio[0].pancho) : setPancho("0");
-        }
 
+    useEffect(() => {
+        const obtenerPrecio = setInterval(() => {
+            let preciosProducto = new ProductoPrecioService()
+            preciosProducto.obtenerPrecios().then((response) => {
+                if (response.productoPrecio[0]) {
+                    response.productoPrecio[0].empanada !== "0" ? setEmpanada(response.productoPrecio[0].empanada) : setEmpanada("0");
+                    response.productoPrecio[0].hamburguesa !== "0" ? setHamburguesa(response.productoPrecio[0].hamburguesa) : setHamburguesa("0");
+                    response.productoPrecio[0].empanadam !== "0" ? setEmpanadam(response.productoPrecio[0].empanadam) : setEmpanadam("0");
+                    response.productoPrecio[0].empanadau !== "0" ? setEmpanadau(response.productoPrecio[0].empanadau) : setEmpanadau("0");
+                    response.productoPrecio[0].lomito !== "0" ? setLomito(response.productoPrecio[0].lomito) : setLomito("0");
+                    response.productoPrecio[0].pizza !== "0" ? setPizza(response.productoPrecio[0].pizza) : setPizza("0");
+                    response.productoPrecio[0].pizzam !== "0" ? setPizzam(response.productoPrecio[0].pizzam) : setPizzam("0");
+                    response.productoPrecio[0].cono !== "0" ? setCono(response.productoPrecio[0].cono) : setCono("0");
+                    response.productoPrecio[0].pancho !== "0" ? setPancho(response.productoPrecio[0].pancho) : setPancho("0");
+                }
+            }).catch((error) => console.log("Error precio ", error))
+        },500);
+        return () => clearInterval(obtenerPrecio);
+    }, [])
 
-    }).catch((error) => console.log("Error precio ", error))
     const [dialogoExito, setDialogoExito] = React.useState<OpenDialog>({
         open: false,
         title: '',

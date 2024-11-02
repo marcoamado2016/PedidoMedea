@@ -71,7 +71,7 @@ export default function TablaPedidos(props: {
                                         </TableCell>
                                         <TableCell align="center">
                                             <Typography variant="body1" fontFamily="Arial" fontSize="1.3rem" align="center">
-                                                {pedido.hamburguesa != 0 ? pedido.detallehamburguesa ? pedido.hamburguesa + ' HAMBUR ' + pedido.detallehamburguesa + ' ' : pedido.hamburguesa + ' HAMBUR' : ''}
+                                                {pedido.hamburguesa != 0 ? pedido.detallehamburguesa ? pedido.hamburguesa + ' HAMBUR ' + pedido.detallehamburguesa + ' ' : pedido.hamburguesa + ' HAMBUR ' : ''}
                                                 {pedido.pancho != 0 ? pedido.detallepancho ? pedido.pancho + ' PANCHO ' + pedido.detallepancho + ', ' : pedido.pancho + ' PANCHO ' : ''}
                                                 {pedido.cono != 0 ? pedido.detallecono ? pedido.cono + ' CONO ' + pedido.detallecono + ', ' : pedido.cono + ' CONO ' : ''}
                                                 {pedido.lomito != 0 ? pedido.detallelomo ? pedido.lomito + ' LOMOS ' + pedido.detallelomo + ' ' : pedido.lomito + ' LOMOS ' : ''}
